@@ -2,7 +2,7 @@
 
 ## 目标
 
-Review 不应先花大量时间重新发现代码结构，而应沿稳定业务坐标检查“改了什么、为什么改、是否放在正确分离点”。
+Review 不应先花大量时间重新发现代码结构，而应沿稳定业务坐标检查“改了什么、为什么改、是否放在正确分离点、验证证据是否足够”。
 
 ## Review 起点
 
@@ -10,10 +10,12 @@ Review 不应先花大量时间重新发现代码结构，而应沿稳定业务�
 
 ```text
 BC
+Acceptance Criteria
 Operation
 UC
 BR
 Behavior Before / After
+Verification Report
 ```
 
 然后再看 Diff。
@@ -23,13 +25,15 @@ Behavior Before / After
 ```text
 Business Change
     ↓
+Acceptance Criteria
+    ↓
 Operation
     ↓
 Use Case
     ↓
 Business Rule
     ↓
-Tests
+Tests / Verification Evidence
     ↓
 Port / Adapter（若受影响）
 ```
@@ -93,7 +97,27 @@ Reviewer 应检查：
 
 不要只检查“代码有没有 bug”，还要检查“规则是否被完整表达”。
 
-## 第四层：测试
+## 第四层：Acceptance Criteria 与测试证据
+
+Reviewer SHOULD 从 AC / BR 反向检查测试，而不是从实现正向判断测试是否合理。
+
+例如：
+
+```text
+BC-2026-014/AC-02
+→ BR-ORDER-003
+→ OrderCancellationPolicyTest
+→ CancelOrderUseCaseTest
+```
+
+重点检查：
+
+- 每个关键 AC 是否有对应证据；
+- Rule Test 是否覆盖决策表；
+- Use Case Test 是否证明流程使用了正确规则；
+- Adapter 变化是否有 Contract / Integration Test；
+- 跨层/跨模块变化是否运行 Architecture Tests；
+- Bug 修复是否有 `Before Fix: FAIL → After Fix: PASS` 的复现证据。
 
 测试名称 SHOULD 使用业务语言，并能说明具体场景。
 
@@ -112,9 +136,21 @@ shouldRejectCancellationWhenOrderIsShipped
 shouldAllowCancellationBeforeShipment
 ```
 
-如果 Bug 修复只增加实现而没有先暴露失败场景的测试，Reviewer 应要求补齐。
+## 第五层：Verification Report
 
-## 第五层：历史可读性
+Reviewer 不只看“CI 绿”，还应检查：
+
+```text
+实际执行了哪些测试
+哪些 AC 被证明
+哪些检查没有运行
+是否存在 Pre-existing Failure
+是否把 NOT VERIFIED 错写成 PASS
+```
+
+如果 `Not Verified` 包含高风险路径，Reviewer 应决定是否必须补验证才能合并。
+
+## 第六层：历史可读性
 
 Review SHOULD 检查：
 
@@ -134,6 +170,8 @@ Port boundary
 Adapter leakage
 Module boundary
 Naming/navigation
+Acceptance Criteria gap
+Verification evidence gap
 Test coverage
 Traceability
 Unrelated change
@@ -143,4 +181,4 @@ Unrelated change
 
 ## 原则
 
-好的结构让 Reviewer 从“理解作者的代码组织方式”转向“验证业务行为和边界是否正确”。
+好的结构让 Reviewer 从“理解作者的代码组织方式”转向“验证业务行为、边界和证据是否正确”。

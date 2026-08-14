@@ -2,13 +2,14 @@
 
 ## 目标
 
-复盘不止回答“哪一行错了”，而要恢复完整因果链：
+复盘不止回答“哪一行错了”，而要恢复完整因果链并形成可验证的防复发证据：
 
 ```text
 哪个入口触发
 → 哪个 Use Case 处理
 → 哪条业务规则相关
 → 哪个 Adapter / 外部条件参与
+→ 如何稳定复现
 → 为什么测试没发现
 → 哪次变更可能引入
 → 为什么 Review 没发现
@@ -65,6 +66,45 @@ MQ 消息
 网络/资源故障
 ```
 
+## 先建立复现证据
+
+能够自动复现时，修复前先得到最小失败证据：
+
+```text
+Before Fix: FAIL
+```
+
+优先放在离根因最近的测试层：
+
+```text
+Business Rule Bug
+→ Rule Test
+
+Use Case Flow Bug
+→ Use Case Test
+
+Mapping / Protocol Bug
+→ Adapter / Contract Test
+
+Boundary Regression
+→ Architecture Test
+```
+
+修复后必须得到：
+
+```text
+After Fix: PASS
+```
+
+再执行受影响模块和必要回归。
+
+如果无法自动复现，Incident 必须记录：
+
+- 已观察到的原始证据；
+- 为什么无法自动复现；
+- 哪些假设仍未被证明；
+- 后续需要补什么可观测性或测试能力。
+
 ## 根因分类
 
 复盘 SHOULD 将主要根因归入明确类别：
@@ -73,7 +113,9 @@ MQ 消息
 Requirement Gap
 Business Rule Defect
 Use Case Orchestration Defect
+Contract Defect
 Adapter / Mapping Defect
+Architecture Boundary Defect
 Infrastructure Defect
 Data Defect
 Observability Defect
@@ -86,7 +128,7 @@ Observability Defect
 → Business Rule Defect
 
 规则实现正确，但另一个 Controller 直接更新状态绕过 Use Case
-→ Use Case / Entry Boundary Defect
+→ Use Case / Architecture Boundary Defect
 
 Domain 返回正确结果，但 JPA 状态映射错误
 → Adapter / Mapping Defect
@@ -109,15 +151,17 @@ git log --follow -- {rule-file}
 优先把遗漏定位到最靠近问题的测试层：
 
 ```text
+Acceptance Criteria 缺失
 规则决策组合遗漏
 Use Case 分支遗漏
 Adapter 契约遗漏
+Architecture 边界未自动检查
 跨系统集成遗漏
 ```
 
 对业务规则 Bug，优先问：
 
-> 这是新业务场景，还是决策表已经定义但测试漏了一格？
+> 这是新业务场景，还是 AC / 决策表已经定义但测试漏了一格？
 
 前者通常是 Requirement Gap；后者通常是实现/测试缺陷。
 
@@ -125,11 +169,12 @@ Adapter 契约遗漏
 
 常见原因：
 
-- 规则没有独立身份；
+- AC / 规则没有独立身份；
 - Diff 混入大量重构噪声；
 - 类名无法表达职责；
 - 测试只验证 happy path；
 - PR 没描述 Behavior Before / After；
+- Verification Report 没有暴露 `Not Verified`；
 - 代码放错层导致 Reviewer 没从正确角度检查。
 
 ## 防复发优先级
@@ -137,14 +182,30 @@ Adapter 契约遗漏
 优先建立系统性防线，而不只写“加强 Review”：
 
 ```text
-1. 明确/修正规则决策表
-2. 增加最小层级测试
-3. 增加架构或静态检查
-4. 增加契约测试
+1. 明确/修正 Acceptance Criteria 和规则决策表
+2. 增加最小层级复现测试
+3. 增加 Use Case / Contract 测试
+4. 增加架构或静态检查
 5. 改善可观测性
-6. 改进 PR / BC 信息
+6. 改进 PR / BC / Verification 信息
 7. 必要时调整模块或分离点
 ```
+
+每个防复发动作应尽量有可验证结果，而不是只记录行动口号。
+
+## Incident 验证结论
+
+复盘关闭前至少记录：
+
+```text
+Reproduction Before Fix
+Verification After Fix
+Regression Scope
+Not Verified
+Pre-existing Failures（如有）
+```
+
+可以复用 `docs/templates/verification-report.md`。
 
 ## 长期统计
 
@@ -163,4 +224,4 @@ Orchestration Defect 很高
 → Use Case 流程测试或状态机需要加强
 ```
 
-复盘的最终目标是让下一次同类错误更难发生，而不是只修复当前错误。
+复盘的最终目标是让下一次同类错误更难发生，并且能够用自动验证证明防线已经建立。
