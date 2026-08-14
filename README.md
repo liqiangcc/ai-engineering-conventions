@@ -10,9 +10,9 @@
 - **可辨识**：从类名可以判断业务语义与架构职责。
 - **可分离**：业务规则、流程控制、外部技术和装配具有明确边界。
 - **可追踪**：Use Case、Business Rule、Business Change、Incident 可以通过稳定标识关联。
-- **可 Review**：代码位置、命名和变更范围具有一致规律，人工 Review 不需要先重新发现架构。
+- **可 Review**：代码位置、命名和变更范围具有一致规律。
 - **可复盘**：Bug 可以沿入口 → 用例 → 规则 → 测试 → 变更历史追溯。
-- **可自动检查**：重要约定最终应尽量由 CI / 静态检查保证，而不是只依赖文档记忆。
+- **可自动检查**：重要约定最终应尽量由 CI / 静态检查保证。
 
 ## 基本导航模型
 
@@ -34,16 +34,39 @@ Business Change / Git History
 Incident Review
 ```
 
-## 目录
+## 规范入口
 
-```text
-docs/
-├── principles/       # 稳定的工程原则与分离点
-├── java/             # Java / Spring 的代码组织与命名约定
-├── traceability/     # UC / BR / BC / INC 与 Git 可追溯规则
-├── workflow/         # AI 开发、Code Review、Bug 复盘流程
-└── templates/        # 项目可直接复制的模板
-```
+### 工程原则
+
+- [关注点分离与分离点](docs/principles/separation-of-concerns.md)
+- [逻辑与控制分离](docs/principles/logic-and-control.md)
+- [复杂度预算](docs/principles/complexity-budget.md)
+
+### Java / Spring
+
+- [包结构规范](docs/java/package-structure.md)
+- [类命名规范](docs/java/class-naming.md)
+- [Use Case 与入口映射](docs/java/use-case-convention.md)
+- [Use Case 与 Business Rule 注解](docs/java/business-rule-annotations.md)
+
+### 可追溯性
+
+- [稳定标识体系](docs/traceability/identity-system.md)
+- [Git 与业务变更历史](docs/traceability/git-history.md)
+- [代码导航与自动索引](docs/traceability/code-navigation.md)
+
+### 工作流
+
+- [AI 开发流程](docs/workflow/ai-development.md)
+- [Code Review 流程](docs/workflow/code-review.md)
+- [Incident / Bug 复盘流程](docs/workflow/incident-review.md)
+
+### 模板
+
+- [Business Rule](docs/templates/business-rule.md)
+- [Business Change](docs/templates/business-change.md)
+- [Incident](docs/templates/incident.md)
+- [Business Change Pull Request](docs/templates/pull-request.md)
 
 ## 约定的约定
 
@@ -53,5 +76,6 @@ docs/
 4. 当前规则、历史变更和事故记录分开维护。
 5. 可以自动推导的信息不重复手工维护。
 6. 先建立稳定边界，再增加工具和自动化。
+7. AI 生成成本低不代表认知复杂度免费；优先选择重复但可预测的结构。
 
-本仓库会逐步补充具体规范，并优先保持规则少、语义明确、可执行、可自动验证。
+完整文档地图见 [docs/README.md](docs/README.md)。

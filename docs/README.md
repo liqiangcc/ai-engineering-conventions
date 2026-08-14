@@ -1,0 +1,81 @@
+# Documentation Map
+
+文档按关注点组织。不要把所有规范合并到一个大文件。
+
+## principles
+
+稳定、跨语言的工程原则：
+
+```text
+separation-of-concerns.md  哪些变化原因应该建立边界
+logic-and-control.md       业务决策与流程编排如何分离
+complexity-budget.md       什么时候不应继续拆分
+```
+
+## java
+
+Java / Spring 的具体落地约定：
+
+```text
+package-structure.md          代码放在哪里
+class-naming.md               类名如何表达职责
+use-case-convention.md        入口如何映射到应用行为
+business-rule-annotations.md  UC / BR 如何进入代码导航
+```
+
+## traceability
+
+当前实现与历史变化如何建立稳定关联：
+
+```text
+identity-system.md   UC / BR / BC / INC
+code-navigation.md   如何从入口导航到实现、测试和历史
+git-history.md       如何保持业务可读的 Git 历史
+```
+
+## workflow
+
+规范如何在真实开发过程中执行：
+
+```text
+ai-development.md  AI 修改代码的固定路径
+code-review.md     人工/AI Review 的固定路径
+incident-review.md Bug/事故复盘的固定路径
+```
+
+## templates
+
+项目可以复制并按需裁剪：
+
+```text
+business-rule.md
+business-change.md
+incident.md
+pull-request.md
+```
+
+## 选择文档的原则
+
+如果问题是“为什么要分”，读 `principles`。
+
+如果问题是“Java 代码具体怎么放、怎么叫”，读 `java`。
+
+如果问题是“怎么找到、怎么追历史”，读 `traceability`。
+
+如果问题是“开发、Review、复盘怎么执行”，读 `workflow`。
+
+如果要创建具体项目记录，使用 `templates`。
+
+## 避免重复
+
+同一个事实只应有一个权威来源：
+
+```text
+当前工程原则         → principles / java
+当前业务规则         → 项目自己的 BR 文档 + 代码 + 测试
+一次业务变化原因     → BC / PR / Git
+一次事故             → INC
+可从代码得到的映射   → 自动生成索引
+```
+
+导航文档可以链接这些来源，但不要复制完整内容。
