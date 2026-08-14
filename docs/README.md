@@ -23,6 +23,19 @@ use-case-convention.md        入口如何映射到应用行为
 business-rule-annotations.md  UC / BR 如何进入代码导航
 ```
 
+## testing
+
+如何让 AI 和人工用独立证据判断实现是否正确：
+
+```text
+testing-strategy.md           分层验证策略与正确性来源
+business-rule-testing.md      业务规则/决策表如何测试
+use-case-testing.md           应用流程如何测试
+adapter-contract-testing.md   Port / Adapter 契约如何验证
+architecture-testing.md       分离点和依赖方向如何机器检查
+verification-workflow.md      AI 从最小测试到回归的验证循环
+```
+
 ## traceability
 
 当前实现与历史变化如何建立稳定关联：
@@ -33,14 +46,16 @@ code-navigation.md   如何从入口导航到实现、测试和历史
 git-history.md       如何保持业务可读的 Git 历史
 ```
 
+Acceptance Criteria 使用 BC 内局部 ID，例如 `BC-2026-014/AC-02`，用于把业务预期与测试证据连接起来。
+
 ## workflow
 
 规范如何在真实开发过程中执行：
 
 ```text
-ai-development.md  AI 修改代码的固定路径
-code-review.md     人工/AI Review 的固定路径
-incident-review.md Bug/事故复盘的固定路径
+ai-development.md  AI 修改代码并完成 Verification 的固定路径
+code-review.md     人工/AI Review 业务行为、边界和证据的固定路径
+incident-review.md Bug/事故复盘与复现/防复发验证的固定路径
 ```
 
 ## templates
@@ -50,6 +65,7 @@ incident-review.md Bug/事故复盘的固定路径
 ```text
 business-rule.md
 business-change.md
+verification-report.md
 incident.md
 pull-request.md
 ```
@@ -59,6 +75,8 @@ pull-request.md
 如果问题是“为什么要分”，读 `principles`。
 
 如果问题是“Java 代码具体怎么放、怎么叫”，读 `java`。
+
+如果问题是“怎么证明实现正确”，读 `testing`。
 
 如果问题是“怎么找到、怎么追历史”，读 `traceability`。
 
@@ -72,7 +90,9 @@ pull-request.md
 
 ```text
 当前工程原则         → principles / java
-当前业务规则         → 项目自己的 BR 文档 + 代码 + 测试
+当前业务规则         → 项目自己的 BR 文档 + 代码
+本次验收预期         → BC / Acceptance Criteria
+可执行正确性证据     → Tests / Verification Report / CI
 一次业务变化原因     → BC / PR / Git
 一次事故             → INC
 可从代码得到的映射   → 自动生成索引
