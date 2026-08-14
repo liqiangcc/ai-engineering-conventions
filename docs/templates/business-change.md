@@ -29,6 +29,22 @@ businessRules:
 
 {本次变更完成后系统应该如何工作。}
 
+## Acceptance Criteria
+
+Acceptance Criteria 是本次 BC 的局部稳定编号。引用时推荐写成 `BC-{YYYY}-{NNN}/AC-01`，避免不同 BC 的 `AC-01` 混淆。
+
+| ID | Scenario / Given | When | Expected |
+|---|---|---|---|
+| AC-01 | {given} | {when} | {expected} |
+| AC-02 | {given} | {when} | {expected} |
+| AC-03 | {boundary/error case} | {when} | {expected} |
+
+要求：
+
+- AC 描述外部可观察的业务行为，不描述具体 Java 实现。
+- 至少包含主要成功场景、关键拒绝场景和边界场景（适用时）。
+- AI 测试应从 AC / BR 推导，不得仅根据当前实现生成预期。
+
 ## 关注点与影响范围
 
 ### 需要修改
@@ -61,17 +77,24 @@ None / Migration required / Backfill required
 |---|---|---|
 | BR-{MODULE}-{NNN} | {before} | {after} |
 
-## 验收场景
+## 测试映射
 
-- [ ] {scenario 1}
-- [ ] {scenario 2}
-- [ ] {boundary scenario}
+| Acceptance Criteria | Business Rule / Contract | Test Evidence |
+|---|---|---|
+| AC-01 | BR-{MODULE}-{NNN} | {test class / scenario} |
+| AC-02 | BR-{MODULE}-{NNN} | {test class / scenario} |
+| AC-03 | {BR / UC / Contract} | {test class / scenario} |
 
-## 测试证据
+## Verification
 
-- {rule test}
-- {use case test}
-- {integration/e2e test if needed}
+- [ ] 相关 Business Rule Tests 通过
+- [ ] 相关 Use Case Tests 通过
+- [ ] 相关 Contract / Adapter Tests 通过或明确不需要
+- [ ] Architecture Tests 通过
+- [ ] 模块回归通过
+- [ ] 未验证项已记录
+
+完整证据可使用 `verification-report.md` 模板。
 
 ## 发布与回滚
 
