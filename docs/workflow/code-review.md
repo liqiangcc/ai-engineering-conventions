@@ -2,7 +2,7 @@
 
 ## 目标
 
-Review 不应先花大量时间重新发现代码结构，而应沿稳定业务坐标检查“改了什么、为什么改、是否放在正确分离点、验证证据是否足够”。
+Review 不应先花大量时间重新发现代码结构，而应沿稳定业务坐标检查“改了什么、为什么改、是否放在正确分离点、验证证据是否足够，以及部署后验证要求是否明确”。
 
 ## Review 起点
 
@@ -15,7 +15,9 @@ Operation
 UC
 BR
 Behavior Before / After
+HTTP API / Regression Case（如适用）
 Verification Report
+Deployment Verification Plan（如适用）
 ```
 
 然后再看 Diff。
@@ -33,9 +35,11 @@ Use Case
     ↓
 Business Rule
     ↓
-Tests / Verification Evidence
+Tests / HTTP Cases / Verification Evidence
     ↓
 Port / Adapter（若受影响）
+    ↓
+Post-Deployment Plan（若需部署）
 ```
 
 ## 第一层：变化原因
@@ -108,6 +112,7 @@ BC-2026-014/AC-02
 → BR-ORDER-003
 → OrderCancellationPolicyTest
 → CancelOrderUseCaseTest
+→ tests/http/order/cancel-order.http
 ```
 
 重点检查：
@@ -116,8 +121,10 @@ BC-2026-014/AC-02
 - Rule Test 是否覆盖决策表；
 - Use Case Test 是否证明流程使用了正确规则；
 - Adapter 变化是否有 Contract / Integration Test；
+- HTTP 外部行为变化是否有可执行 HTTP API Test；
 - 跨层/跨模块变化是否运行 Architecture Tests；
-- Bug 修复是否有 `Before Fix: FAIL → After Fix: PASS` 的复现证据。
+- Bug 修复是否有 `Before Fix: FAIL → After Fix: PASS` 的同一 Case 证据；
+- Bug Case 是否会永久保留为 Regression Asset。
 
 测试名称 SHOULD 使用业务语言，并能说明具体场景。
 
@@ -136,27 +143,73 @@ shouldRejectCancellationWhenOrderIsShipped
 shouldAllowCancellationBeforeShipment
 ```
 
-## 第五层：Verification Report
+## 第五层：HTTP API / Bug Regression
+
+有 HTTP 入口时，Reviewer SHOULD 检查：
+
+```text
+operationId 是否可推导到 tests/http/{module}/{operation}.http
+HTTP Case 是否验证真正外部可观察行为
+是否重复了大量 Domain 决策表而造成测试膨胀
+环境变量是否替代了硬编码 URL / Token
+是否把秘密提交进仓库
+```
+
+对于 Bug：
+
+```text
+测试断言的是正确行为吗？
+修复前是否真实 FAIL？
+修复后是否同一 Case PASS？
+是否成为永久回归资产？
+```
+
+如果只提供一个修复后新写的 PASS Case，不能证明原 Bug 被真实复现过。
+
+## 第六层：Verification Report
 
 Reviewer 不只看“CI 绿”，还应检查：
 
 ```text
 实际执行了哪些测试
 哪些 AC 被证明
+HTTP Case 在什么环境执行
 哪些检查没有运行
 是否存在 Pre-existing Failure
 是否把 NOT VERIFIED 错写成 PASS
 ```
 
-如果 `Not Verified` 包含高风险路径，Reviewer 应决定是否必须补验证才能合并。
+如果 `Not Verified` 包含高风险路径，Reviewer 应决定是否必须补验证才能合并或发布。
 
-## 第六层：历史可读性
+## 第七层：Post-Deployment Verification
+
+如果变更需要部署，Review SHOULD 在合并前确认：
+
+```text
+如何确认 running version
+Targeted Case 是什么
+Deployment Smoke 是什么
+staging 失败是否阻止推广
+哪些生产 Case 是 production-safe
+哪些生产行为明确不会直接验证
+```
+
+尤其是 Bug Fix，应能回答：
+
+> 部署 staging 后，将重放哪一个相同 Regression Case 来证明真实服务已经修复？
+
+不要接受“部署后手工试一下”作为唯一计划。
+
+生产写操作如果不安全，应明确标记生产 Bug Case `NOT VERIFIED`，而不是要求冒险操作真实数据。
+
+## 第八层：历史可读性
 
 Review SHOULD 检查：
 
-- 是否关联 BC；
+- 是否关联 BC / INC；
 - Commit 是否包含必要 UC / BR / Operation；
 - 是否混入无关移动或格式化；
+- HTTP Regression Case 是否能通过 INC / operationId 找到；
 - 未来 `git log` 是否还能理解这次业务变化。
 
 ## Review 结论分类
@@ -168,10 +221,13 @@ Business Rule placement
 Use Case orchestration
 Port boundary
 Adapter leakage
+HTTP boundary
 Module boundary
 Naming/navigation
 Acceptance Criteria gap
 Verification evidence gap
+Bug reproduction gap
+Post-deployment verification gap
 Test coverage
 Traceability
 Unrelated change
@@ -182,3 +238,5 @@ Unrelated change
 ## 原则
 
 好的结构让 Reviewer 从“理解作者的代码组织方式”转向“验证业务行为、边界和证据是否正确”。
+
+好的验证流程还让 Reviewer 在合并前就知道：代码如何被证明、Bug 如何复现、部署以后如何确认真实服务也已经修复。
