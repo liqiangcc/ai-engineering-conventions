@@ -4,6 +4,7 @@
 
 ```yaml
 businessChange: BC-{YYYY}-{NNN}
+incident: INC-{YYYY}-{NNN} # optional
 operations:
   - {operationId}
 useCases:
@@ -24,15 +25,20 @@ businessRules:
 仅 Bug / Incident 修复填写。
 
 ```text
+Regression Case: {test path / scenario}
 Before Fix: FAIL / NOT REPRODUCIBLE / NOT APPLICABLE
 After Fix:  PASS / FAIL / NOT VERIFIED
+Permanent Regression: YES / NO / N/A
 ```
 
 Evidence:
 
-- {reproduction test or steps}
+- Before: {environment / version / expected / actual}
+- After: {environment / version / result}
 
-## Verification Results
+复现测试应断言正确行为，因此同一测试在修复前 FAIL、修复后 PASS。
+
+## Pre-Deployment Verification
 
 | Layer | Result | Evidence |
 |---|---|---|
@@ -40,8 +46,32 @@ Evidence:
 | Use Case Tests | PASS / FAIL / N/A | {tests} |
 | Contract / Adapter Tests | PASS / FAIL / N/A / NOT VERIFIED | {tests} |
 | Architecture Tests | PASS / FAIL / N/A | {tests} |
+| HTTP API Tests | PASS / FAIL / N/A / NOT VERIFIED | {http case / environment} |
 | Module Regression | PASS / FAIL / NOT RUN | {command / CI} |
 | Repository Regression | PASS / FAIL / NOT RUN | {command / CI} |
+
+## Post-Deployment Verification
+
+如果本次任务不包含部署，填写 `NOT REQUIRED`。
+
+```yaml
+environment: {staging / production / ...}
+endpoint: {base URL / service endpoint}
+expectedVersion: {commit / image digest / build version}
+runningVersion: {observed version}
+verificationTime: {timestamp}
+```
+
+| Check | Result | Evidence |
+|---|---|---|
+| Deployment Identity | PASS / FAIL / NOT VERIFIED | {version endpoint / deploy platform} |
+| Health / Readiness | PASS / FAIL / NOT RUN | {check} |
+| Targeted Change Case | PASS / FAIL / NOT VERIFIED | {HTTP / regression case} |
+| Deployment Smoke | PASS / FAIL / NOT RUN | {suite / cases} |
+| Production-safe Smoke | PASS / FAIL / NOT RUN / N/A | {cases} |
+| Production Bug Case | PASS / FAIL / NOT VERIFIED / N/A | {case / reason} |
+
+对于非 `production-safe` 的写操作，允许生产 Bug Case 为 `NOT VERIFIED`，但必须说明为什么不能安全执行以及已完成的 staging 证据。
 
 ## Failure Classification
 
@@ -52,8 +82,13 @@ BUSINESS_RULE_FAILURE
 USE_CASE_FLOW_FAILURE
 CONTRACT_FAILURE
 ADAPTER_FAILURE
+HTTP_BOUNDARY_FAILURE
 ARCHITECTURE_FAILURE
 REGRESSION_FAILURE
+WRONG_ARTIFACT
+DEPLOYMENT_CONFIGURATION_FAILURE
+ROUTING_FAILURE
+DEPENDENCY_FAILURE
 TEST_ENVIRONMENT_FAILURE
 PRE_EXISTING_FAILURE
 ```
@@ -84,19 +119,16 @@ None observed
 
 ## Conclusion
 
-只能根据证据使用以下类型的结论：
+只能根据真实执行证据下结论。
 
 ```text
-VERIFIED
-PARTIALLY_VERIFIED
-NOT_VERIFIED
-FAILED
+Pre-Deployment: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED
+Post-Deployment: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED / NOT_RUN / NOT_REQUIRED
+Overall: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED
 ```
-
-### Result
-
-`{VERIFIED | PARTIALLY_VERIFIED | NOT_VERIFIED | FAILED}`
 
 ### Reason
 
-{用一到三句话说明结论依据，不把未运行的检查写成已通过。}
+{用一到三句话说明结论依据。不要把 NOT RUN / NOT VERIFIED 写成 PASS。}
+
+如果任务包含部署，只有 Pre-Deployment 通过但尚未执行目标环境验证时，Overall 不应表述为“部署已验证”。
