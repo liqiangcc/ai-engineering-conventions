@@ -2,13 +2,13 @@
 
 ## 目标
 
-测试不是为了证明“代码能运行”，而是为了给业务正确性、流程正确性、技术契约和架构边界提供可重复的证据。
+测试不是为了证明“代码能运行”，而是为了给业务正确性、流程正确性、技术契约、真实外部行为和架构边界提供可重复的证据。
 
 AI 编码必须区分：
 
 - **实现依据**：BC 的验收条件、BR 的业务规则、公开 API / Port 契约。
 - **实现代码**：系统当前如何执行。
-- **验证证据**：测试、静态检查、构建和可复现实验。
+- **验证证据**：测试、HTTP 可执行场景、静态检查、构建和可复现实验。
 
 测试不得仅从当前实现反推预期行为，避免 AI 同时写错实现和测试却得到全绿结果。
 
@@ -25,7 +25,9 @@ Contract / Adapter Tests
           ↓
 Architecture Tests
           ↓
-关键 Integration / E2E Tests
+HTTP API Tests
+          ↓
+关键 Integration / Cross-System E2E Tests
           ↓
 Repository Regression
 ```
@@ -82,11 +84,35 @@ Repository Regression
 
 Java 项目优先使用 ArchUnit 或等价静态检查。
 
-### Integration / E2E Tests
+### HTTP API Tests
 
-回答：关键边界组合后是否仍然工作。
+回答：真实运行的应用从 HTTP 调用方视角看是否正确。
 
-只覆盖关键业务链和高风险集成，不用 E2E 替代 BR / UC 测试。
+重点覆盖：
+
+```text
+路由
+认证/授权
+参数绑定
+序列化
+Validation
+Controller
+异常映射
+HTTP Status / Header / Body
+部署环境配置差异
+```
+
+HTTP API Test SHOULD 使用进入 Git 的 `.http/.rest` 或等价可执行文本资产，并能由人工、AI 和 CI 重复执行。
+
+它只覆盖高价值外部场景，不重复 BR 的全部决策组合。
+
+详见 `http-api-testing.md`。
+
+### Integration / Cross-System E2E Tests
+
+回答：多个真实边界或系统组合后是否仍然工作。
+
+只覆盖关键业务链和高风险集成，不用 E2E 替代 BR / UC / HTTP API Test。
 
 E2E 失败时，应尽量能回落到更小层级定位原因。
 
@@ -108,8 +134,11 @@ UC-ORDER-004
 JpaOrderRepositoryAdapterTest
 → 验证领域 Order 与持久化模型的映射及保存契约
 
-CancelOrderE2ETest
-→ 验证 HTTP 入口到持久化的关键主链可运行
+tests/http/order/cancel-order.http
+→ 验证真实 HTTP 入口、认证、请求映射和响应契约
+
+跨系统 CancelOrderE2ETest（如确有需要）
+→ 验证订单、支付、库存等真实系统组合
 ```
 
 ## 正确性来源优先级
@@ -131,12 +160,13 @@ CancelOrderE2ETest
 
 1. 修改前先确定受影响的 UC、BR 和验收条件。
 2. Bug 修复优先先增加能复现问题的失败测试。
-3. 从最小相关测试开始，逐层扩大验证范围。
-4. 测试失败必须先分类：Rule、Use Case、Adapter、Architecture、Environment。
-5. 不允许通过删除测试、放宽断言或 Mock 掉待验证行为来让 CI 变绿。
-6. 无法执行的验证必须显式列入 `Not Verified`。
-7. “阅读代码认为正确”不能写成“已验证通过”。
-8. 测试代码与生产代码同样遵守命名、关注点分离和可导航约定。
+3. HTTP Bug SHOULD 保留可重放的 HTTP 复现场景，并在修复后转为永久回归资产。
+4. 从最小相关测试开始，逐层扩大验证范围。
+5. 测试失败必须先分类：Rule、Use Case、Adapter、HTTP Boundary、Architecture、Environment。
+6. 不允许通过删除测试、放宽断言或 Mock 掉待验证行为来让 CI 变绿。
+7. 无法执行的验证必须显式列入 `Not Verified`。
+8. “阅读代码认为正确”不能写成“已验证通过”。
+9. 测试代码与生产代码同样遵守命名、关注点分离和可导航约定。
 
 ## 最小完成标准
 
@@ -146,7 +176,8 @@ CancelOrderE2ETest
 对应 BR / UC 的测试证据
 + 受影响模块测试通过
 + 架构检查通过
++ HTTP 外部行为验证（当 HTTP 契约/入口受影响时）
 + 明确的未验证项（如有）
 ```
 
-是否需要 Adapter、Integration、E2E 或全仓回归，由变更影响范围决定，而不是固定把所有测试都跑一遍。
+是否需要 Adapter、HTTP、Integration、跨系统 E2E 或全仓回归，由变更影响范围决定，而不是固定把所有测试都跑一遍。
