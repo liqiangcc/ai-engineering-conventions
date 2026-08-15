@@ -7,7 +7,7 @@
 ```text
 AI / Local / CI
 → Stable Verification Command
-→ Convention Checks
+→ Convention Checker
 → Existing Verification Capabilities
 → CI Orchestration
 → HTTP Runtime Verification
@@ -22,13 +22,11 @@ PR：`#29 Pilot stable verification entrypoint for AI/local/CI`
 
 当前可访问的自有仓库中没有同时具备完整 Spring Boot 构建入口、HTTP API 和可运行测试基线的合适 Java Pilot。
 
-`log-query-mcp` 是真实活跃项目，并已经具有 Rust fmt/clippy/test/build、JSON Schema contract validation、GitHub Actions、Streamable HTTP 服务以及实际发布运维文档。
-
-因此先用于验证语言无关的自动化分离点，Java / ArchUnit 仍留给后续真实 Spring 项目。
+`log-query-mcp` 是真实活跃项目，并已经具有 Rust 验证、JSON Schema Contract、GitHub Actions、Streamable HTTP 服务和实际发布运维文档，因此先用于验证语言无关的自动化分离点。
 
 ## 已实现能力
 
-稳定入口：
+### Stable Verification Command
 
 ```text
 scripts/verify
@@ -38,6 +36,7 @@ Targets：
 
 ```text
 conventions
+conventions-test
 fmt
 clippy
 test
@@ -48,20 +47,20 @@ http-smoke
 all
 ```
 
-职责保持分离：
+职责：
 
 ```text
 scripts/verify
-→ 只负责编排
-
-scripts/check_conventions.py
-→ 项目结构约定检查
+→ 稳定编排入口
 
 Cargo
 → Rust 验证能力
 
 scripts/validate_contracts.py
 → Contract 验证能力
+
+scripts/check_conventions.py
+→ 当前仓库 Convention Checker
 
 httpYac + tests/http/**/*.http
 → 真实 HTTP 边界验证能力
@@ -70,67 +69,70 @@ GitHub Actions
 → 远程编排
 ```
 
-`all` 只包含无需运行实例的 source/build/contract/convention 验证；`http-smoke` 单独要求真实 `BASE_URL`。
+### Convention Checker MVP
 
-## Convention Checker MVP
-
-Pilot 已增加项目本地 Checker：
+项目本地规则：
 
 ```text
-scripts/check_conventions.py
+LQM_HTTP001  required MCP initialize HTTP case exists
+LQM_HTTP002  HTTP case @name exists and is unique
+LQM_HTTP003  production-safe and destructive cannot coexist
+LQM_HTTP004  HTTP request uses environment BASE_URL
+LQM_HTTP005  HTTP case asserts explicit status
 ```
 
-稳定入口：
+第一版使用 `LQM_*` 项目本地 Rule Code，而不是过早假设通用 UC/BR 元数据已经存在。
 
-```bash
+### Checker Self Tests
+
+Checker 已重构为可测试的纯规则函数：
+
+```text
+collect_violations(root)
+```
+
+并增加临时目录 Fixture 覆盖：
+
+```text
+valid asset                 → no violation
+missing initialize          → LQM_HTTP001
+duplicate @name             → LQM_HTTP002
+production-safe destructive → LQM_HTTP003
+hard-coded base URL         → LQM_HTTP004
+missing status assertion    → LQM_HTTP005
+```
+
+统一入口现在执行：
+
+```text
 ./scripts/verify conventions
+→ conventions-test
+→ convention-checker
 ```
 
-第一版只检查高确定性规则：
+因此以后可以区分：
 
 ```text
-LQM_HTTP001  必须存在 MCP initialize HTTP 验证资产
-LQM_HTTP002  每个 .http Case 必须有唯一 @name
-LQM_HTTP003  production-safe 不得同时 destructive
-LQM_HTTP004  请求必须使用环境 BASE_URL
-LQM_HTTP005  每个 HTTP Case 必须有明确 status 断言
+Checker implementation defect
+vs
+Repository convention violation
 ```
 
-这些规则使用 `LQM_` 项目前缀，而不是直接占用通用 UC/BR/HTTP Rule Code。原因是当前项目尚未采用完整 Operation/UC/BR 元数据体系；Pilot 不应为了通用化而伪造不存在的业务身份。
+### HTTP Smoke
 
-新增独立 Workflow：
-
-```text
-.github/workflows/conventions.yml
-→ ./scripts/verify conventions
-```
-
-因此：
-
-```text
-Convention Checker
-≠ Rust Test
-≠ Contract Test
-≠ HTTP Runtime Test
-```
-
-失败可以按关注点单独分类。
-
-## HTTP Pilot
-
-新增：
+真实资产：
 
 ```text
 tests/http/mcp/initialize.http
 ```
 
-对应：
+运行：
 
 ```bash
 BASE_URL=http://127.0.0.1:8000 ./scripts/verify http-smoke
 ```
 
-Case 断言 HTTP 200、Content-Type、`jsonrpc` 和 `protocolVersion`，并标记：
+该 Case 为：
 
 ```text
 smoke
@@ -138,40 +140,26 @@ deployment
 production-safe
 ```
 
-它可以在本地、staging 和部署后重放同一个接口资产。
+`http-smoke` 不包含在 `all` 中，因为运行实例验证和源码/构建验证是不同关注点。
 
-## Verification Result
+## CI Wiring
 
-### Implementation
+独立 Workflow：
 
 ```text
-Stable command: IMPLEMENTED
-Convention checker: IMPLEMENTED
-Convention workflow wiring: IMPLEMENTED
-Rust/Contract workflow wiring: IMPLEMENTED
-HTTP executable asset: IMPLEMENTED
-CI runtime verification: NOT VERIFIED
-HTTP runtime verification: NOT VERIFIED
+Conventions → ./scripts/verify conventions
+Rust        → ./scripts/verify rust
+Contracts   → ./scripts/verify contracts
+Release     → existing release orchestration
 ```
+
+CI 不重新实现 Checker、Cargo 或 Contract 能力。
+
+## 当前执行证据
 
 ### GitHub Actions
 
-最初 Rust / Contracts / Release 三个 Job 均在 step 执行前失败：
-
-```text
-runner_id: 0
-steps: []
-```
-
-GitHub Check annotation 表明账户 billing / spending-limit 阻止 Job 启动。
-
-随后显式重跑 Contracts Job，结果仍然：
-
-```text
-steps: []
-```
-
-增加 Convention Workflow 后，新 Head 实际触发：
+PR 实际触发了：
 
 ```text
 Conventions
@@ -180,19 +168,24 @@ Contracts
 Release
 ```
 
-其中 `Conventions / check-conventions` 同样：
+所有 GitHub-hosted Job 均在任何 step 开始前失败：
 
 ```text
+runner_id: 0
 steps: []
 ```
 
-因此它没有机会执行 `scripts/check_conventions.py`。当前结论仍是：
+此前 GitHub Check annotation 明确报告 Billing / spending-limit 阻止 Job 启动。
+
+重新触发 Contracts 后仍然 `steps=[]`；新增 Conventions Workflow 同样 `steps=[]`。
+
+因此准确分类仍为：
 
 ```text
 TEST_ENVIRONMENT_FAILURE
 ```
 
-而不是：
+不能分类成：
 
 ```text
 CONVENTION_FAILURE
@@ -201,75 +194,64 @@ CONTRACT_FAILURE
 HTTP_API_FAILURE
 ```
 
-这证明“CI 红色状态”必须与“具体验证能力失败”分开解释。
-
 ### 独立执行环境
 
-尝试在隔离执行环境 clone Pilot 仓库，但该环境不能解析 `github.com`，因此无法获得仓库工作树。该结果同样属于环境限制，不能写成本地 PASS 或代码 FAIL。
+曾尝试在隔离执行环境 clone Pilot 仓库运行相同稳定入口，但环境不能解析 `github.com`，因此同样没有形成代码运行证据。
 
-## Pilot 得到的结论
-
-### 1. Stable Verification Command 有价值
-
-AI、本地开发和 CI 可以使用同一入口：
-
-```text
-./scripts/verify <target>
-```
-
-具体 Cargo、Python validator、httpYac 等工具参数被隔离在项目内部。
-
-### 2. Convention 与 Behavior 必须分开
-
-Checker 只检查结构、命名和安全元数据；HTTP 协议是否真的正确仍由 `.http` Case 和运行实例决定。
-
-### 3. 项目本地规则应先于过早通用化
-
-当前先使用 `LQM_HTTP*` 规则。只有真实项目验证后，才能判断哪些规则值得提升到 `ai-engineering-conventions` 的通用 Rule Catalog。
-
-### 4. Pre-Deployment 与 Runtime Verification 必须分离
-
-`./scripts/verify all` 不代表已部署实例正确。
-
-真实运行时验证必须显式执行：
-
-```text
-./scripts/verify http-smoke
-```
-
-### 5. PASS / FAIL 不足以描述现实
-
-Pilot 实际证明必须保留：
-
-```text
-NOT_RUN
-NOT_VERIFIED
-TEST_ENVIRONMENT_FAILURE
-```
-
-不能看到 workflow failure 就让 AI 修改业务代码。
-
-## 当前结论
+## Verification Status
 
 ```text
 Pilot status: PARTIALLY_VERIFIED
 
-Design separation: VERIFIED BY REVIEW
-Stable entrypoint wiring: IMPLEMENTED
-Convention checker MVP: IMPLEMENTED
-Convention CI wiring: IMPLEMENTED
-HTTP regression/smoke asset: IMPLEMENTED
-CI runtime: NOT VERIFIED
-HTTP runtime: NOT VERIFIED
-Blocking reason: GitHub Actions billing/spending-limit + isolated runner network restriction
+Design separation:                 VERIFIED BY REVIEW
+Stable verification entrypoint:    IMPLEMENTED
+Convention Checker MVP:            IMPLEMENTED
+Convention Checker self-tests:     IMPLEMENTED
+Convention CI wiring:              IMPLEMENTED
+Rust / Contract CI wiring:         IMPLEMENTED
+HTTP regression/smoke asset:       IMPLEMENTED
+
+Convention runtime:                NOT VERIFIED
+Checker self-test runtime:         NOT VERIFIED
+Rust runtime:                      NOT VERIFIED
+Contract runtime:                  NOT VERIFIED
+HTTP runtime:                      NOT VERIFIED
+
+Blocking reason:
+GitHub Actions billing/spending-limit + current isolated runner network restriction
 ```
+
+## Pilot 结论
+
+### 1. Checker 也必须被测试
+
+如果 Convention Checker 成为 required check，它自身必须有 deterministic fixtures，不能只相信脚本实现。
+
+### 2. Convention Failure 与 Environment Failure 必须分离
+
+即使 `Conventions` 在 GitHub UI 显示红色，只要 `steps=[]`，就没有证据说明任何 `LQM_HTTP*` 规则失败。
+
+### 3. Workflow 只负责编排
+
+Checker 规则、Checker Test、Rust 验证、Contract 验证、HTTP Case 都位于各自职责位置，Workflow 只调用稳定入口。
+
+### 4. Pre-Deployment 与 Runtime Verification 必须分离
+
+```text
+./scripts/verify all
+```
+
+只覆盖无需真实运行实例的验证；真实 HTTP 行为必须显式执行 `http-smoke`。
+
+### 5. Evidence Over Claims
+
+实现、测试文件、Workflow 都存在，不等于它们已经实际 PASS。只要没有真实运行证据，状态保持 `NOT VERIFIED`。
 
 ## 下一步
 
-1. 恢复 GitHub Actions runner 可用性；
-2. 重新运行 Conventions / Rust / Contracts；
-3. 让 `./scripts/verify conventions` 获得真实 PASS/FAIL 证据；
-4. 在可访问 `log-query-mcp` 实例的环境执行 `BASE_URL=... ./scripts/verify http-smoke`；
+1. 恢复 GitHub Actions runner；
+2. 首先执行 `./scripts/verify conventions`，取得 Checker 自测 + 真实仓库检查证据；
+3. 再取得 Rust / Contracts 真实结果；
+4. 在可访问的 `log-query-mcp` 实例执行 `http-smoke`；
 5. staging 部署后重放同一个 `initialize.http`；
-6. 观察 `LQM_HTTP*` 规则在真实演进中是否稳定，再决定是否提取为通用 Checker 规则；
-7. Java / ArchUnit 继续等待真实 Spring Boot Pilot。
+6. 有真实 Spring Boot 项目后再执行 Java / ArchUnit Pilot。
