@@ -9,6 +9,7 @@ AI / Local / CI
 → Stable Verification Command
 → Existing Verification Capabilities
 → CI Orchestration
+→ HTTP Runtime Verification
 → Evidence
 ```
 
@@ -47,6 +48,7 @@ test
 build
 rust
 contracts
+http-smoke
 all
 ```
 
@@ -61,6 +63,9 @@ Cargo
 
 scripts/validate_contracts.py
 → Contract 验证能力
+
+httpYac + tests/http/**/*.http
+→ 真实 HTTP 边界验证能力
 
 GitHub Actions
 → 远程编排
@@ -78,7 +83,31 @@ GitHub Actions
 ./scripts/verify contracts
 ```
 
-README 同时使用该稳定入口作为开发者/AI 的默认验证路径。
+新增真实 HTTP smoke asset：
+
+```text
+tests/http/mcp/initialize.http
+```
+
+对应运行入口：
+
+```bash
+BASE_URL=http://127.0.0.1:8000 ./scripts/verify http-smoke
+```
+
+`http-smoke` 没有加入 `all`。原因是：
+
+```text
+all
+→ pre-deployment source/build/contract verification
+→ 不要求运行实例
+
+http-smoke
+→ runtime / post-deployment verification
+→ 要求真实 BASE_URL + httpYac
+```
+
+这保持了“代码验证”和“运行实例验证”两个关注点分离。
 
 ## Verification Result
 
@@ -87,7 +116,9 @@ README 同时使用该稳定入口作为开发者/AI 的默认验证路径。
 ```text
 Stable command: IMPLEMENTED
 Workflow wiring: IMPLEMENTED
-Runtime verification: NOT VERIFIED
+HTTP executable asset: IMPLEMENTED
+CI runtime verification: NOT VERIFIED
+HTTP runtime verification: NOT VERIFIED
 ```
 
 ### GitHub Actions
@@ -126,6 +157,42 @@ TEST_ENVIRONMENT_FAILURE
 BUILD_FAILURE
 BUSINESS_RULE_FAILURE
 CONTRACT_FAILURE
+HTTP_API_FAILURE
+```
+
+### 独立执行环境
+
+尝试在隔离执行环境拉取 Pilot 仓库以运行相同 `scripts/verify`，但该环境不能解析 `github.com`，因此仓库无法 clone。
+
+该结果仍属于执行环境限制，不能写成本地 PASS 或代码 FAIL。
+
+## HTTP Pilot
+
+新增 `tests/http/mcp/initialize.http`，复用 README 已存在的 MCP `initialize` 外部操作语义，并断言：
+
+```text
+HTTP 200
+Content-Type 存在
+响应包含 jsonrpc
+响应包含 protocolVersion
+```
+
+该 Case 标记为：
+
+```text
+smoke
+deployment
+production-safe
+```
+
+原因是 initialize 为只读握手，不修改日志或业务数据。
+
+它可以在本地、staging 和部署后对同一个真实接口重放，而不重新维护一份 curl 逻辑。
+
+当前因为没有可达运行实例 + 可执行 httpYac 的环境，状态仍准确记录为：
+
+```text
+NOT VERIFIED
 ```
 
 ## 规范验证到的结论
@@ -152,9 +219,21 @@ CI YAML 不再复制 Cargo 验证命令和 Contract validator 调用细节。
 ./scripts/verify <target>
 ```
 
-### 3. Runtime Evidence 不能由代码 Review 代替
+### 3. Pre-Deployment 与 Runtime Verification 必须分离
 
-虽然脚本和 Workflow wiring 可以静态 Review，但在 runner 实际执行前，状态仍必须写：
+`./scripts/verify all` 不隐含 HTTP 运行实例已经正确。
+
+真正的外部运行时验证必须显式执行：
+
+```text
+./scripts/verify http-smoke
+```
+
+并提供具体环境 identity / BASE_URL。
+
+### 4. Runtime Evidence 不能由代码 Review 代替
+
+虽然脚本、HTTP asset 和 Workflow wiring 可以静态 Review，但在 runner/服务实际执行前，状态仍必须写：
 
 ```text
 NOT VERIFIED
@@ -162,14 +241,15 @@ NOT VERIFIED
 
 不能因为“看起来正确”就写 VERIFIED。
 
-### 4. Pilot 应暴露基础设施问题，而不是绕过
+### 5. Pilot 应暴露基础设施问题，而不是绕过
 
 此次没有为了获得绿色结果：
 
 - 删除 required workflow；
 - 跳过失败；
 - 把失败改写成 PASS；
-- 伪造本地执行结果。
+- 伪造本地执行结果；
+- 把 HTTP asset 的存在写成 HTTP PASS。
 
 而是保留 PR 并明确记录环境阻塞。
 
@@ -180,14 +260,17 @@ Pilot status: PARTIALLY_VERIFIED
 
 Design separation: VERIFIED BY REVIEW
 Stable entrypoint wiring: IMPLEMENTED
+HTTP regression/smoke asset: IMPLEMENTED
 CI runtime: NOT VERIFIED
-Blocking reason: GitHub Actions billing/spending-limit
+HTTP runtime: NOT VERIFIED
+Blocking reason: GitHub Actions billing/spending-limit + current isolated runner network restriction
 ```
 
 ## 下一步
 
 1. 恢复 GitHub Actions runner 可用性；
 2. 重新运行 PR #29 的 Rust / Contracts workflows；
-3. 成功后记录真实执行证据；
-4. 再增加该项目的 HTTP/MCP 可执行 regression；
-5. Java / ArchUnit 继续等待一个真实 Spring Boot Pilot，不使用不完整仓库或 Demo 替代。
+3. 在一个可访问 `log-query-mcp` 实例的环境执行 `BASE_URL=... ./scripts/verify http-smoke`；
+4. staging 部署后重放同一个 `initialize.http`；
+5. 若出现真实 HTTP Bug，把复现 Case 永久保留到 `tests/http/`；
+6. Java / ArchUnit 继续等待一个真实 Spring Boot Pilot，不使用不完整仓库或 Demo 替代。
