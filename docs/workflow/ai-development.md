@@ -8,6 +8,8 @@ AI 不应从“直接改代码”开始，而应先确定业务坐标、分离�
 
 先按[从需求输入到研发 Issue](requirement-to-issue.md)整理任务上下文，明确用例、规则与验收依据。已有任务记录直接补齐和引用，无需另建重复记录。
 
+GitHub / GitLab Issue 的读取和更新遵循[Issue 命令行操作](issue-cli.md)，分别使用 `gh` / `glab`。
+
 AI SHOULD 依次确定：
 
 ```text

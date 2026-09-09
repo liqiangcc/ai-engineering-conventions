@@ -2,6 +2,8 @@
 
 > 按[从需求输入到研发 Issue](../workflow/requirement-to-issue.md)分阶段填写。创建草稿时允许待补充；不适用项注明原因。已有权威记录填链接，不重复正文。
 
+> 适用于 GitHub / GitLab Issue；远程操作分别使用 `gh` / `glab`，遵循[Issue 命令行操作](../workflow/issue-cli.md)。发布时指定目标主机与仓库，关联任务使用完整 URL。
+
 ## 需求输入
 
 {原始描述或材料；有来源时附链接。不限输入渠道。}

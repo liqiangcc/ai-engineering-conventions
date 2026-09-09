@@ -80,6 +80,7 @@ Git History / Incident Review
 ### 工作流
 
 - [从需求输入到研发 Issue](docs/workflow/requirement-to-issue.md)
+- [Issue 命令行操作：GitHub / GitLab](docs/workflow/issue-cli.md)
 - [Grill Me：需求澄清 Skill](.agents/skills/grill-me/SKILL.md)（基于上游源码改编，显式调用，随本仓库使用）
 - [AI 开发流程](docs/workflow/ai-development.md)
 - [Code Review 流程](docs/workflow/code-review.md)
