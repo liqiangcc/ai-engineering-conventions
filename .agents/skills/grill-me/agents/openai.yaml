@@ -1,0 +1,6 @@
+interface:
+  display_name: "Grill Me：需求到 Issue"
+  short_description: "通过逐轮追问澄清需求，按仓库规范形成包含用例、业务规则和验收标准的 Issue 草稿"
+  default_prompt: "使用 $grill-me 澄清这项需求，并按照规范生成研发 Issue 草稿。"
+policy:
+  allow_implicit_invocation: false
