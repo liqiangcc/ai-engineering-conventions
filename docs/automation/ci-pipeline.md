@@ -66,7 +66,7 @@ deploy-production
 
 PR MUST 阻断 compile、MUST convention、BR/UC、contract、architecture 和 required HTTP regression failure。
 
-部署晋级 SHOULD 阻断 running version mismatch、targeted regression failure 和 required smoke failure。
+部署晋级 MUST 遵守[发布门禁](../testing/post-deployment-verification.md#发布门禁)：staging 运行版本不匹配、targeted verification 失败或 required smoke 失败均不得晋级。
 
 生产不安全写操作未执行应记录 NOT_VERIFIED，不得伪装 PASS。
 

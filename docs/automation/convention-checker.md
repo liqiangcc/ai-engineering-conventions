@@ -18,17 +18,19 @@ aec check
 ./scripts/verify conventions
 ```
 
-工具名称不强制，检查语义由 Rule Catalog 定义。
+工具名称不强制。[Rule Catalog](../rules/convention-rules.md)提供稳定编号，检查语义、适用范围和级别以其链接的规范正文为准。
 
 ## 检查范围
 
 - Operation：operationId 唯一、verbNoun、业务模块映射。
-- Use Case：UC ID 唯一、重要 operation 有主要 Use Case。
+- Use Case：UC ID 唯一、外部业务 operation 有主要 Use Case（UC004）。
 - Business Rule：BR ID 唯一、活跃 BR 有实现和测试、引用路径存在。
 - HTTP：标准 `.http` 路径、UC/BR/INC 引用有效、production-safe 安全标记。
 - Naming：只检查已经稳定写入规范的客观禁止模式。
 
 具体 Rule Code 见 `docs/rules/convention-rules.md`。
+
+引用完整性要求：BR 引用的实现/测试路径 MUST 存在；HTTP Test 的 UC/BR 引用 MUST 有效；采用 INC 时，Regression Test 的 INC 引用 MUST 有效。引用检查隔离导航断链风险，不判断业务行为是否正确。
 
 ## 输出
 

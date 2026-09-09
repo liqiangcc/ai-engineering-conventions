@@ -46,7 +46,7 @@ order/application/cancel/CancelOrderResult.java
 
 ## 一个 Operation 一个主要 Use Case
 
-一个外部业务 Operation MUST 映射到一个主要 Use Case。
+一个外部业务 Operation MUST 映射到一个主要 Use Case。健康检查、就绪检查等纯技术入口不要求业务 UC。此约束隔离入口协议与业务编排，避免入口形成隐藏用例。
 
 推荐：
 

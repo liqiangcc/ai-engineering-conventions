@@ -258,6 +258,9 @@ VERIFICATION_ENVIRONMENT_ERROR
 典型规则：
 
 ```text
+Staging Expected Version != Running Version
+→ MUST NOT promote
+
 Staging targeted verification FAIL
 → MUST NOT promote
 
