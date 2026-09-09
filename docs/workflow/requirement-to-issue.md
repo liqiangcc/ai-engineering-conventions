@@ -8,6 +8,8 @@
 
 使用[研发 Issue 模板](../templates/development-issue.md)，按阶段补齐信息。创建草稿时不要求设计和验证已经完成。
 
+任务阶段、阻塞及类型使用[Issue 进度与中文标签](issue-progress.md)；后续设计、开发和验证从同一 Issue 恢复并推进。
+
 ## 需求整理与拆分
 
 ```text

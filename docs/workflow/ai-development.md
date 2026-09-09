@@ -10,6 +10,8 @@ AI 不应从“直接改代码”开始，而应先确定业务坐标、分离�
 
 GitHub / GitLab Issue 的读取和更新遵循[Issue 命令行操作](issue-cli.md)，分别使用 `gh` / `glab`。
 
+每次开始或恢复任务，按[Issue 进度与中文标签](issue-progress.md)核对阶段和实际证据，推进尚未完成的工作，并在关键变化时更新 Issue。
+
 AI SHOULD 依次确定：
 
 ```text

@@ -54,6 +54,7 @@ generated-navigation.md
 ```text
 requirement-to-issue.md
 issue-cli.md
+issue-progress.md
 ai-development.md
 code-review.md
 incident-review.md
