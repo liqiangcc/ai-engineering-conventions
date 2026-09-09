@@ -82,6 +82,7 @@ Git History / Incident Review
 - [从需求输入到研发 Issue](docs/workflow/requirement-to-issue.md)
 - [Issue 命令行操作：GitHub / GitLab](docs/workflow/issue-cli.md)
 - [Issue 进度与中文标签](docs/workflow/issue-progress.md)
+- [Issue 工作计划与查找](docs/workflow/issue-planning.md)
 - [Grill Me：需求澄清 Skill](.agents/skills/grill-me/SKILL.md)（基于上游源码改编，显式调用，随本仓库使用）
 - [AI 开发流程](docs/workflow/ai-development.md)
 - [Code Review 流程](docs/workflow/code-review.md)
@@ -90,6 +91,7 @@ Git History / Incident Review
 ### 模板
 
 - [研发 Issue](docs/templates/development-issue.md)
+- [工作计划 Issue](docs/templates/work-plan-issue.md)
 - [Business Rule](docs/templates/business-rule.md)
 - [Business Change / Acceptance Criteria](docs/templates/business-change.md)
 - [Verification Report](docs/templates/verification-report.md)

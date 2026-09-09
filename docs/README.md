@@ -55,6 +55,7 @@ generated-navigation.md
 requirement-to-issue.md
 issue-cli.md
 issue-progress.md
+issue-planning.md
 ai-development.md
 code-review.md
 incident-review.md
@@ -66,6 +67,7 @@ incident-review.md
 
 ```text
 development-issue.md
+work-plan-issue.md
 business-rule.md
 business-change.md
 verification-report.md
@@ -129,7 +131,7 @@ Java 怎么组织          → java
 
 ```text
 当前工程原则         → principles / java
-当前业务规则         → 项目自己的 BR 文档 + 代码
+当前业务规则         → 项目选定的规则定义位置（Issue 或 BR 文档）及关联实现
 本次验收预期         → Issue 或 BC 中的 Acceptance Criteria（选定一个权威位置）
 可执行正确性证据     → Tests / Verification Report / CI
 自动执行方式         → 项目稳定命令 + CI
