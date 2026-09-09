@@ -28,7 +28,7 @@ UC-ORDER-004：取消订单
 实现：
 
 ```java
-@UseCase("UC-ORDER-004")
+@UseCase(id = "UC-ORDER-004")
 public class CancelOrderUseCase {
 }
 ```

@@ -96,15 +96,24 @@ Application Use Case 负责一次业务操作的编排，例如：
 public final class CancelOrderUseCase {
     private final OrderRepository orders;
     private final DomainEventPublisher events;
+    private final OrderCancellationPolicy policy;
+
+    public CancelOrderUseCase(OrderRepository orders,
+                             DomainEventPublisher events,
+                             OrderCancellationPolicy policy) {
+        this.orders = orders;
+        this.events = events;
+        this.policy = policy;
+    }
 
     public CancelOrderResult execute(CancelOrderCommand command) {
         Order order = orders.findById(command.orderId())
                 .orElseThrow(OrderNotFoundException::new);
 
         CancellationDecision decision =
-                OrderCancellationPolicy.evaluate(order, command.operator());
+                policy.evaluate(order, command.operator());
 
-        if (!decision.allowed()) {
+        if (!decision.isAllowed()) {
             return CancelOrderResult.rejected(decision.reason());
         }
 
@@ -115,6 +124,8 @@ public final class CancelOrderUseCase {
     }
 }
 ```
+
+示例中 `CancellationDecision.allowed()` 是允许决策的静态工厂，`decision.isAllowed()` 读取实例决策；Policy 通过构造器注入，保持实例方法与调用方式一致。
 
 Use Case MAY 管理：
 
