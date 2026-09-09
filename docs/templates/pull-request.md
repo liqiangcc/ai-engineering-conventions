@@ -1,5 +1,7 @@
 # Business Change Pull Request
 
+验证结果按[统一状态语义](../schemas/verification-result.md#status)填写；完整证据使用 [Verification Report](verification-report.md)。
+
 ## Business Change
 
 `BC-{YYYY}-{NNN}`
@@ -71,7 +73,7 @@ Bug 修复时填写；普通变更填 `N/A`。
 ```text
 Regression Case: {test path / scenario}
 Before Fix: FAIL / NOT REPRODUCIBLE / N/A
-After Fix: PASS / FAIL / NOT VERIFIED / N/A
+After Fix: {status}
 Permanent Regression: YES / NO / N/A
 ```
 

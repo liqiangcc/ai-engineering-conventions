@@ -104,32 +104,9 @@ Boundary Regression
 
 ## Bug Case 必须成为永久回归资产
 
-修复完成后，不删除复现测试。
+按照[永久回归资产](../testing/bug-reproduction-testing.md#永久回归资产)保留关键故障场景。关闭 Incident 前检查测试路径和执行证据；Fixture 整理不应丢失原故障场景。
 
-标准生命周期：
-
-```text
-Bug / INC
-→ Reproduction Case
-→ Before Fix: FAIL
-→ Fix
-→ After Fix: PASS
-→ Permanent Regression Case
-```
-
-可以重构 Fixture 或把独立 Incident Case 合并回 operation 测试文件，但历史故障对应的关键行为场景必须保留。
-
-## 无法自动复现
-
-如果无法自动复现，Incident 必须记录：
-
-- 已观察到的原始证据；
-- 为什么无法自动复现；
-- 哪些假设仍未被证明；
-- 哪些部分只能标记 `NOT VERIFIED`；
-- 后续需要补什么可观测性、Fixture 或故障注入能力。
-
-不得把“写了一个相似测试”当作已经复现原 Bug。
+无法自动复现时，采用[不可自动复现的 Bug](../testing/bug-reproduction-testing.md#不可自动复现的-bug)要求记录原始证据、限制和后续动作。
 
 ## 根因分类
 

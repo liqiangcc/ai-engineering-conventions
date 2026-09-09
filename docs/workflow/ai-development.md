@@ -138,51 +138,15 @@ Critical cross-system user flow
 
 ## Bug 修复规则
 
-Bug SHOULD 先形成可复现证据：
+执行[Bug Reproduction 规范](../testing/bug-reproduction-testing.md)：定位预期与最小 Case → 修复前复现 → 修改实现 → 同一 Case 复验 → 保留永久回归资产。
 
-```text
-Before Fix: FAIL
-After Fix: PASS
-```
-
-复现测试 MUST 断言正确行为，因此修复前失败、修复后通过。
-
-修复后 SHOULD 把该 Case 永久保留为 Regression Asset。
-
-HTTP Bug 优先复用：
-
-```text
-tests/http/{module}/{operation}.http
-```
-
-特殊复杂场景 MAY 使用：
-
-```text
-tests/http/{module}/regression/{inc-id}-{scenario}.http
-```
-
-详见 [`../testing/bug-reproduction-testing.md`](../testing/bug-reproduction-testing.md)。
-
-如果无法自动复现，必须在 Verification Report 的 `Not Verified` 中说明原因和可获得的替代证据。
+无法复现时记录原因、原始证据和未验证范围；默认路径、断言要求及证据字段以该规范为准。
 
 ## 部署后验证规则
 
-如果任务包含部署，AI SHOULD：
+任务包含部署时，执行[部署验证流程](../testing/post-deployment-verification.md#标准流程)：确认运行版本 → targeted verification → smoke → 记录目标环境证据。
 
-```text
-确认运行版本
-→ Health / Readiness
-→ 重放本次 Targeted Case
-→ Bug Fix 重放同一个 Regression Case
-→ 运行 Deployment Smoke
-→ 生产只执行 production-safe Case
-```
-
-测试环境 / staging 的 Targeted Verification 失败时，不应继续推广。
-
-生产环境不得为了证明 Bug 修复而执行会破坏真实业务数据的非安全 Case；这类场景可以明确记录 `NOT VERIFIED`，并提供 staging 与 production-safe smoke 证据。
-
-详见 [`../testing/post-deployment-verification.md`](../testing/post-deployment-verification.md)。
+晋级遵守[发布门禁](../testing/post-deployment-verification.md#发布门禁)，生产场景按[安全标签定义](../testing/post-deployment-verification.md#生产环境)选择。未运行项进入报告，不从本地或 CI 结果推断生产行为。
 
 ## 提交拆分
 

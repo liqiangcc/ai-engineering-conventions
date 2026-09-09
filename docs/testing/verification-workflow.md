@@ -282,45 +282,9 @@ AI 不得为了获得 PASS：
 
 ## Verification Report
 
-每次重要修改完成时至少输出：
+重要修改使用 [Verification Report 模板](../templates/verification-report.md)，记录影响范围、验收依据、实际执行证据、必需项集合及未验证项。Bug 修复记录同一 Case 的修复前后结果；已部署时记录目标环境与运行版本。
 
-```text
-Affected
-- Operations
-- UC
-- BR
-
-Acceptance Criteria
-- AC-01 PASS
-- AC-02 PASS
-
-Pre-Deployment Verification
-- Rule tests: PASS
-- Use case tests: PASS
-- Module tests: PASS
-- Contract/integration: PASS / NOT REQUIRED / NOT VERIFIED
-- Architecture tests: PASS
-- HTTP API tests: PASS / NOT REQUIRED / NOT VERIFIED
-- Repository regression: PASS / NOT RUN
-
-Bug Reproduction
-- Before fix: FAIL（如果是 Bug 修复）
-- After fix: PASS
-- Permanent regression case: {path}
-
-Post-Deployment Verification（如已部署）
-- Environment
-- Expected / Running Version
-- Targeted case: PASS / FAIL / NOT VERIFIED
-- Deployment smoke: PASS / FAIL / NOT RUN
-- Production-safe smoke: PASS / FAIL / NOT RUN
-
-Not Verified
-- 明确列出没有执行或无法证明的项目
-
-Pre-existing Failures
-- 与本次无关但观察到的已有失败
-```
+状态、阶段与 Overall 汇总遵守[结果规范](../schemas/verification-result.md)。流程不另行维护一套状态枚举；非必需问题仍须披露。
 
 ## 完成定义
 

@@ -6,6 +6,8 @@
 - 身份规范中活跃 BR 的实现和测试要求由 SHOULD 升为 MUST，与 BR002/BR003 对齐。
 - CI 参考中的 staging 晋级阻断由 SHOULD 升为 MUST；运行版本不匹配、targeted verification 失败、required smoke 失败均阻断。
 
+Bug Reproduction 专题的正确行为断言由 SHOULD 升为 MUST，与已有 AI 开发和 Incident 工作流要求对齐；复现困难仍按未验证流程记录，不能改为断言错误行为。
+
 ## 采用步骤
 
 1. 检查业务 operation 的主要 UC 映射，明确区分业务与纯技术入口；新接入执行 UC004，不同时以 UC002 重复报错。

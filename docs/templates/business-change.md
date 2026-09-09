@@ -118,4 +118,4 @@ None / Migration required / Backfill required
 
 {说明目标环境、发布顺序、特性开关、推广门禁和回滚条件。}
 
-如果 staging 的 Targeted Verification / Required Smoke FAIL，默认不得继续推广到下一环境。
+发布条件引用[发布门禁](../testing/post-deployment-verification.md#发布门禁)，本节记录项目的发布与回滚安排。

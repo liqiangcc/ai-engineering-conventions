@@ -19,8 +19,8 @@ businessRules:
 
 | Criteria | Result | Evidence |
 |---|---|---|
-| BC-{YYYY}-{NNN}/AC-01 | PASS / FAIL / NOT VERIFIED | {test / command / CI check} |
-| BC-{YYYY}-{NNN}/AC-02 | PASS / FAIL / NOT VERIFIED | {test / command / CI check} |
+| BC-{YYYY}-{NNN}/AC-01 | {status} | {test / command / CI check} |
+| BC-{YYYY}-{NNN}/AC-02 | {status} | {test / command / CI check} |
 
 ## Bug Reproduction
 
@@ -29,7 +29,7 @@ businessRules:
 ```text
 Regression Case: {test path / scenario}
 Before Fix: FAIL / NOT REPRODUCIBLE / NOT APPLICABLE
-After Fix:  PASS / FAIL / NOT VERIFIED
+After Fix:  {status}
 Permanent Regression: YES / NO / N/A
 ```
 
@@ -77,23 +77,7 @@ verificationTime: {timestamp}
 
 ## Failure Classification
 
-如有失败，按关注点分类：
-
-```text
-BUSINESS_RULE_FAILURE
-USE_CASE_FLOW_FAILURE
-CONTRACT_FAILURE
-ADAPTER_FAILURE
-HTTP_BOUNDARY_FAILURE
-ARCHITECTURE_FAILURE
-REGRESSION_FAILURE
-WRONG_ARTIFACT
-DEPLOYMENT_CONFIGURATION_FAILURE
-ROUTING_FAILURE
-DEPENDENCY_FAILURE
-TEST_ENVIRONMENT_FAILURE
-PRE_EXISTING_FAILURE
-```
+分类依据[验证工作流的失败分类](../testing/verification-workflow.md#失败分类)，部署问题进一步参考[部署失败分类](../testing/post-deployment-verification.md#失败分类)。分类用于定位关注点，不替代结果状态。
 
 - {failure}: {classification} — {evidence / analysis}
 

@@ -16,7 +16,7 @@ Bug 修复不能只留下“代码改了”和“现在看起来好了”。
 
 ## 核心原则
 
-Bug Reproduction Test 的断言 SHOULD 表达**正确业务行为**，而不是表达当前错误行为。
+Bug Reproduction Test 的断言 MUST 表达**正确业务行为**，而不是表达当前错误行为。
 
 例如真实 Bug 是“已发货订单仍可取消”。
 

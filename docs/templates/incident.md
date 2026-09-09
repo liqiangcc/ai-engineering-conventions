@@ -2,6 +2,8 @@
 
 > 这是 Incident 复盘模板。重点不是记录“谁写错了”，而是恢复完整因果链、留下复现证据，并把一次故障转化为永久回归资产。
 
+验证结果使用[统一状态语义](../schemas/verification-result.md#status)；以下 `{status}` 可表达完整状态集合。
+
 ## Metadata
 
 ```yaml
@@ -67,21 +69,7 @@ Before Fix Result: FAIL / NOT REPRODUCIBLE
 
 ## 根因分类
 
-选择主要类型：
-
-```text
-Requirement Gap
-Business Rule Defect
-Use Case Orchestration Defect
-Contract Defect
-Adapter / Mapping Defect
-HTTP Boundary Defect
-Architecture Boundary Defect
-Deployment / Configuration Defect
-Infrastructure Defect
-Data Defect
-Observability Defect
-```
+按[Incident 根因分类](../workflow/incident-review.md#根因分类)选择主要类型。
 
 根因：
 
@@ -124,7 +112,7 @@ Status: KEPT / NOT CREATED
 Reason: {if not created}
 ```
 
-修复完成后，能够稳定复现的 Bug Case SHOULD 永久保留；可以整理 Fixture 或合并回 operation 测试文件，但不能删除关键故障场景。
+保留要求见[永久回归资产](../testing/bug-reproduction-testing.md#永久回归资产)，本节记录实际路径与保留状态。
 
 ## Post-Deployment Verification
 
@@ -134,11 +122,11 @@ expectedVersion: {commit / image digest}
 runningVersion: {observed version}
 ```
 
-- Deployment Identity: {PASS / FAIL / NOT VERIFIED}
-- Targeted Regression Case: {PASS / FAIL / NOT VERIFIED}
-- Deployment Smoke: {PASS / FAIL / NOT RUN}
-- Production-safe Smoke: {PASS / FAIL / NOT RUN / N/A}
-- Production Bug Case: {PASS / FAIL / NOT VERIFIED / N/A}
+- Deployment Identity: {status}
+- Targeted Regression Case: {status}
+- Deployment Smoke: {status}
+- Production-safe Smoke: {status}
+- Production Bug Case: {status}
 
 如果生产无法安全重放有副作用的 Bug Case，明确记录 `NOT VERIFIED`，并给出 staging 与 production-safe smoke 证据。
 

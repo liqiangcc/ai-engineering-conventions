@@ -183,24 +183,9 @@ HTTP Case 在什么环境执行
 
 ## 第七层：Post-Deployment Verification
 
-如果变更需要部署，Review SHOULD 在合并前确认：
+需要部署的变更，Review 在合并前确认运行版本识别方式、重放的 Targeted Case、Smoke Suite 和生产安全依据。
 
-```text
-如何确认 running version
-Targeted Case 是什么
-Deployment Smoke 是什么
-staging 失败是否阻止推广
-哪些生产 Case 是 production-safe
-哪些生产行为明确不会直接验证
-```
-
-尤其是 Bug Fix，应能回答：
-
-> 部署 staging 后，将重放哪一个相同 Regression Case 来证明真实服务已经修复？
-
-不要接受“部署后手工试一下”作为唯一计划。
-
-生产写操作如果不安全，应明确标记生产 Bug Case `NOT VERIFIED`，而不是要求冒险操作真实数据。
+门禁条件与安全判定分别引用[发布门禁](../testing/post-deployment-verification.md#发布门禁)和[生产标签定义](../testing/post-deployment-verification.md#生产环境)。Reviewer 检查计划是否满足这些规则，不另行定义通过标准。
 
 ## 第八层：历史可读性
 
