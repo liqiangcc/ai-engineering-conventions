@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+const { spawnSync } = require('node:child_process');
+const path = require('node:path');
+
+const target = process.argv[2];
+if (process.argv.length !== 3 || !['docs', 'unit', 'all'].includes(target)) {
+  console.error('Usage: scripts/verify <docs|unit|all>');
+  process.exit(3);
+}
+const root = path.resolve(__dirname, '..');
+const commands = {
+  docs: [path.join(__dirname, 'check-docs.mjs')],
+  unit: ['--test', path.join(__dirname, 'check-docs.test.mjs')],
+};
+const statuses = [];
+for (const name of target === 'all' ? ['docs', 'unit'] : [target]) {
+  const run = spawnSync(process.execPath, commands[name], { cwd: root, stdio: 'inherit' });
+  const status = run.error || run.signal || ![0, 1, 2, 4].includes(run.status) ? 2 : run.status;
+  statuses.push(status);
+  if (status === 2) console.error(`[ENVIRONMENT_ERROR] ${name} - execution could not complete`);
+  else if (name === 'unit') console.log(`[${status === 0 ? 'PASS' : 'FAIL'}] unit`);
+}
+process.exit([1, 2, 4].find(status => statuses.includes(status)) ?? 0);

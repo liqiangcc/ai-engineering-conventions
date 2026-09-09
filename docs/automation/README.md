@@ -8,6 +8,7 @@
 - [统一验证命令](verification-command.md)
 - [Convention Checker](convention-checker.md)
 - [CI Pipeline](ci-pipeline.md)
+- [本仓库文档验证](repository-verification.md)
 
 相关：
 
