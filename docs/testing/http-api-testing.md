@@ -187,11 +187,11 @@ HTTP Test 必须明确依赖什么测试数据。
 acceptance       验收场景
 regression       永久回归场景
 deployment       部署后需要执行
-production-safe  允许在生产安全执行
-destructive      会修改或破坏数据，只允许受控环境
+production-safe  允许在生产安全执行，需有安全依据
+destructive      存在破坏性业务副作用，仅限受控非生产环境
 ```
 
-标签是选择执行范围的输入，不是业务规则本身。
+标签是选择执行范围的输入，不是业务规则本身。安全判定、写入条件和互斥要求以[生产环境标签定义](post-deployment-verification.md#生产环境)为准；写入不自动等于 destructive。
 
 ## 与 E2E 的边界
 

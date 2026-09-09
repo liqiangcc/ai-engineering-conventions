@@ -153,14 +153,21 @@ Smoke Test 数量应小，执行应快，目标是判断“这个部署是否基
 
 生产环境默认只执行标记为 `production-safe` 的场景。
 
-`production-safe` 至少满足其一：
+测试标签的权威定义如下，用于隔离实际业务副作用风险，避免把“存在写入”和“可能破坏业务”混为一谈：
 
-```text
-纯只读且不会泄漏敏感数据
-幂等且不会产生真实业务副作用
-使用完全隔离的测试租户 / 测试账号 / 测试数据
-具有可靠自动清理和业务隔离机制
-```
+- `production-safe`：允许在生产执行。只读场景必须不泄漏敏感数据且不触发真实业务副作用。写入场景必须同时具备业务隔离、受控测试数据，以及可靠清理或无残留业务副作用；不能仅凭测试账号或幂等性判断安全。
+- `destructive`：可能破坏真实业务数据，或产生不能可靠隔离、清理的副作用；只允许在受控的非生产环境执行。普通写入不自动属于 destructive。
+- 同一 Case MUST NOT 同时标记 production-safe 与 destructive（HTTP004）。没有任何标签也不构成生产执行许可；安全证据不足时不得标记 production-safe。
+
+| 场景 | 标签判断 |
+|---|---|
+| 不泄漏敏感信息、不触发副作用的只读查询 | 可以 production-safe |
+| 完全隔离测试租户、受控数据、可靠清理的写入，外部调用亦隔离 | 可以 production-safe，不因写入自动 destructive |
+| 仅使用测试账号，但仍发送真实通知或影响客户数据 | 不可 production-safe；副作用符合定义时 destructive |
+| 真实支付、删除用户数据或不可逆业务流程 | 默认 destructive，不可 production-safe |
+| 同时标记 production-safe 和 destructive | HTTP004 失败，不得执行生产验证 |
+
+Checker 仅验证标签互斥，不能由标签自动证明业务安全；安全依据由场景设计与 Review 提供。
 
 以下操作默认 NOT production-safe：
 
