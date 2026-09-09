@@ -83,6 +83,29 @@ pull-request.md
 → Verification Summary
 ```
 
+## rules / schemas
+
+- [Rule Catalog](rules/README.md)：检查编号和指向权威规则的链接。
+- [Verification Result](schemas/README.md)：统一状态、汇总结论和验收场景。
+
+## decisions / migrations
+
+- [工具边界决策](decisions/README.md)：工具提取条件与当前范围。
+- [规范迁移记录](migrations/README.md)：采用方升级规则与接口时需要执行的迁移。
+
+## reference / examples
+
+- [验证矩阵与治理](reference/README.md)：检查职责和规范变更治理。
+- [目标项目快速接入](examples/README.md)：真实项目最小采用顺序。
+
+## pilots
+
+[Pilot 记录](pilots/README.md)保存历史实施、观测和未验证范围，不替代当前规范或实时运行状态。
+
+## 自动化模板
+
+[采用与 Review 模板](templates/tooling-README.md)用于记录真实采用证据。
+
 ## 选择文档的原则
 
 ```text

@@ -4,17 +4,17 @@
 
 核心入口：
 
-- `automation-strategy.md`
-- `verification-command.md`
-- `convention-checker.md`
-- `ci-pipeline.md`
+- [自动化策略](automation-strategy.md)
+- [统一验证命令](verification-command.md)
+- [Convention Checker](convention-checker.md)
+- [CI Pipeline](ci-pipeline.md)
 
 相关：
 
-- `../rules/convention-rules.md`
-- `../schemas/verification-result.md`
-- `../java/automation-reference.md`
-- `../traceability/generated-navigation.md`
-- `../roadmap/implementation-roadmap.md`
+- [convention-rules](../rules/convention-rules.md)
+- [verification-result](../schemas/verification-result.md)
+- [automation-reference](../java/automation-reference.md)
+- [generated-navigation](../traceability/generated-navigation.md)
+- [implementation-roadmap](../roadmap/implementation-roadmap.md)
 
-当前状态：规范和参考设计已定义；通用 Checker 与真实项目 Pilot 尚未验证。
+当前仓库提供规范和参考设计。已有[真实项目 Pilot 历史记录](../pilots/README.md)，其中运行验证尚未形成 PASS 证据；通用 Checker 与 Java/ArchUnit 落地未验证。采用方升级见[迁移记录](../migrations/README.md)。

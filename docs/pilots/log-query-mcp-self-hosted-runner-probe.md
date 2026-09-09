@@ -1,5 +1,21 @@
 # log-query-mcp Self-hosted Runner Probe
 
+
+## 证据定位
+
+此记录描述历史观测，不代表外部项目当前状态；本次文档修订未重新执行或核验外部任务。
+
+| 字段 | 记录 |
+|---|---|
+| 仓库 / 候选 PR | liqiangcc/log-query-mcp，PR #29 |
+| 候选提交 SHA | 未记录 |
+| 观测时间 | 未记录；文档提交时间不能替代执行时间 |
+| CI run / job 链接 | 未记录 |
+| 环境 | GitHub Actions；具体 runner 信息见下文，未独立核验 |
+| 结果 | 已记录 queued / conclusion=null，实际 step 未执行；fallback NOT VERIFIED |
+| 阻塞原因 | 缺少匹配 runner 或状态未知，未确认具体子类型 |
+
+
 ## Concern
 
 验证 GitHub-hosted Actions 因 Billing / spending-limit 在 runner 启动前失败时，self-hosted runner 调度路径是否仍可使用。

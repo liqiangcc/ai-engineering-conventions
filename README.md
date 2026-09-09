@@ -108,4 +108,4 @@ Git History / Incident Review
 8. 自动化是规范执行层，不是新的业务真相源。
 9. AI 生成成本低不代表认知复杂度免费；优先选择重复但可预测的结构。
 
-完整文档地图见 [docs/README.md](docs/README.md)。
+规则编号、结果语义、治理、迁移与 Pilot 证据入口见 [完整文档地图](docs/README.md)。
