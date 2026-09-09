@@ -106,6 +106,8 @@ Boundary Regression
 
 按照[永久回归资产](../testing/bug-reproduction-testing.md#永久回归资产)保留关键故障场景。关闭 Incident 前检查测试路径和执行证据；Fixture 整理不应丢失原故障场景。
 
+## 无法自动复现
+
 无法自动复现时，采用[不可自动复现的 Bug](../testing/bug-reproduction-testing.md#不可自动复现的-bug)要求记录原始证据、限制和后续动作。
 
 ## 根因分类

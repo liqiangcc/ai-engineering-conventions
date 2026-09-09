@@ -178,7 +178,7 @@ PaymentCompletedEvent
 
 ## 默认禁止的模糊名称
 
-以下名称默认不允许作为核心业务类名：
+核心业务类 SHOULD NOT 使用以下模糊名称（NAME001/NAME002/NAME003 的适用范围为核心业务类，其中 NAME001 匹配 `*ServiceImpl`、NAME002 匹配 `CommonService`、NAME003 匹配无业务语义的 `*Utils` / `*Helper`）。这些模式降低角色辨识度；工具只检查已明确的模式，不能把所有命名偏好直接升级成 MUST：
 
 ```text
 ServiceImpl

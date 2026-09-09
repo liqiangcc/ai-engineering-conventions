@@ -92,7 +92,7 @@ Before Fix Result: FAIL / NOT REPRODUCIBLE
 ```text
 Regression Case: {same test path / scenario}
 Version After Fix: {commit / build}
-After Fix Result: PASS / FAIL / NOT VERIFIED
+After Fix Result: {status}
 ```
 
 相关验证：

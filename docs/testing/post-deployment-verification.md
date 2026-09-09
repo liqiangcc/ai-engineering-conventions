@@ -260,7 +260,7 @@ VERIFICATION_ENVIRONMENT_ERROR
 
 ## 发布门禁
 
-项目 SHOULD 定义哪些 Post-Deployment Check 是 Required。
+项目 SHOULD 定义哪些 Post-Deployment Check 是 Required。Deployment Identity、staging 本次 Targeted Verification 和 required smoke MUST 纳入晋级的必需集合；证据不足时按[统一汇总语义](../schemas/verification-result.md#conclusion)阻断，不能只阻断显式 FAIL 而放行未执行。
 
 典型规则：
 

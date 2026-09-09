@@ -15,7 +15,7 @@
 | Rule | Level | Meaning | Source |
 |---|---|---|---|
 | UC001 | MUST | UC ID 唯一 | [规范正文](../traceability/identity-system.md) |
-| UC002 | SHOULD | 重要 operation 有主要 Use Case（已弃用，不用于新接入） | [规范正文](../java/use-case-convention.md) |
+| UC002 | SHOULD | 重要 operation 有主要 Use Case（已弃用，不用于新接入） | [历史语义与迁移](../migrations/rule-level-alignment.md) |
 | UC003 | SHOULD | operation 与 Use Case 共享业务动作语义 | [规范正文](../java/use-case-convention.md) |
 | UC004 | MUST | 外部业务 operation 有一个主要 Use Case | [规范正文](../java/use-case-convention.md#一个-operation-一个主要-use-case) |
 

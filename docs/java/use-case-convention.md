@@ -77,6 +77,8 @@ Internal API ─────┘
 
 ## operationId 命名
 
+operationId SHOULD 使用 verbNoun，与主要 Use Case SHOULD 共享业务动作语义；HTTP 资源 SHOULD 能映射到业务模块，以降低入口到实现的定位成本。
+
 默认使用：
 
 ```text

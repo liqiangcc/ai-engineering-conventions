@@ -51,6 +51,7 @@ hint: add executable HTTP regression/acceptance test
 0  所有 MUST 检查通过
 1  存在 MUST 规范失败
 2  checker 本身或环境错误
+3  参数错误或请求能力不支持
 4  必需检查证据不足，结果为 NOT_VERIFIED / NOT_RUN
 ```
 
