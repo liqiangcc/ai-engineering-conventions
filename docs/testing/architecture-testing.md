@@ -117,15 +117,9 @@ order.adapter
 
 ## 命名与位置检查
 
-可逐步增加：
+Architecture Test 负责依赖方向、包位置与架构角色关系，例如主要应用操作位于 application、HTTP 入口位于 adapter/in/web、出站实现兑现对应 Port。
 
-- `..application..` 中的主要操作类以 `UseCase` 结尾；
-- `..adapter.in.web..` 中的入口以 `Controller` 结尾；
-- 出站 Port 实现以 `Adapter` 结尾；
-- `domain` 中禁止 `Jpa`、`Redis`、`Kafka`、`Http` 等技术前缀；
-- 禁止 `ServiceImpl`、`CommonService`、`Utils` 等约定中的模糊角色名。
-
-命名检查应服务于可导航性，不要为了正则完美制造不必要例外。
+普通类名模式（如 ServiceImpl、CommonService 和无语义 Utils/Helper）由 [Convention Checker](../automation/convention-checker.md)依据命名规范检查，不在 Architecture Test 再维护同一套禁止列表。此分工隔离名字约定与结构依赖的变化原因，避免两套检查级别漂移。
 
 ## 模块边界
 

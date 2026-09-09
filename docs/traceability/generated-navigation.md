@@ -48,7 +48,7 @@ module map
 
 Generator 生成视图；Convention Checker 检查完整性和唯一性。
 
-发现重复 identity 时必须 FAIL，不能任意选择一个。
+身份冲突按[定义与引用规则](identity-system.md#身份定义与引用)判断。重复或冲突定义必须 FAIL，合法的多处引用和多实现关联合并展示；无法确认来源时标记 NOT_VERIFIED，不能静默选择一个或生成已验证的完整地图。
 
 ## Git 策略
 

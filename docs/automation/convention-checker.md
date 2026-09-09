@@ -28,7 +28,7 @@ aec check
 - HTTP：标准 `.http` 路径、UC/BR/INC 引用有效、production-safe 安全标记。
 - Naming：只检查已经稳定写入规范的客观禁止模式。
 
-具体 Rule Code 见 `docs/rules/convention-rules.md`。
+具体 Rule Code 见 [Rule Catalog](../rules/convention-rules.md)。UC/BR 唯一性遵守[身份定义与引用](../traceability/identity-system.md#身份定义与引用)，不得把全文搜索命中数当作定义数。
 
 引用完整性要求：BR 引用的实现/测试路径 MUST 存在；HTTP Test 的 UC/BR 引用 MUST 有效；采用 INC 时，Regression Test 的 INC 引用 MUST 有效。引用检查隔离导航断链风险，不判断业务行为是否正确。
 
@@ -49,11 +49,12 @@ hint: add executable HTTP regression/acceptance test
 
 ```text
 0  所有 MUST 检查通过
-1  存在规范失败
+1  存在 MUST 规范失败
 2  checker 本身或环境错误
+4  必需检查证据不足，结果为 NOT_VERIFIED / NOT_RUN
 ```
 
-SHOULD 类规则可先 warning，稳定后再升级。
+SHOULD 类规则可先 warning，稳定后再升级。结果与组合退出码遵守[统一验证命令](verification-command.md#exit-code)，不能把无法判断唯一性当成通过。
 
 ## 渐进采用
 

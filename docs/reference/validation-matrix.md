@@ -3,8 +3,8 @@
 | Concern | Source of Truth | Automated By | Evidence |
 |---|---|---|---|
 | operationId uniqueness | API metadata | Convention Checker | OP001 |
-| UC uniqueness | code metadata | Convention Checker | UC001 |
-| BR uniqueness | code/docs metadata | Convention Checker | BR001 |
+| UC uniqueness | primary use case declarations | Convention Checker | UC001 |
+| BR uniqueness | logical rule definitions (references may repeat) | Convention Checker | BR001 |
 | BR behavior | BR / AC | Business Rule Tests | JUnit report |
 | Use Case flow | UC / AC | Use Case Tests | JUnit report |
 | Port contract | Port contract | Contract Tests | test report |
