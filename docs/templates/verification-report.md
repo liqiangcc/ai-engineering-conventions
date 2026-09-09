@@ -4,8 +4,11 @@
 
 ## Scope
 
+任务入口使用 Issue 或已有 BC 的完整引用；BC / INC / UC / BR 按适用性填写，不适用时注明原因，不为填写报告新建身份或重复记录。
+
 ```yaml
-businessChange: BC-{YYYY}-{NNN}
+task: {Issue URL / BC reference}
+businessChange: BC-{YYYY}-{NNN} # optional
 incident: INC-{YYYY}-{NNN} # optional
 operations:
   - {operationId}
@@ -17,10 +20,12 @@ businessRules:
 
 ## Acceptance Criteria
 
+引用本次任务选定的 AC 权威来源，不复制验收标准正文。Issue 中的 AC 使用 `{Issue 完整 URL} / AC-01`；BC 中的 AC 使用 `BC-{YYYY}-{NNN}/AC-01`。以下两行展示两种引用方式，按实际来源选用，不要求同时存在。
+
 | Criteria | Result | Evidence |
 |---|---|---|
+| {Issue 完整 URL} / AC-01 | {status} | {test / command / CI check} |
 | BC-{YYYY}-{NNN}/AC-01 | {status} | {test / command / CI check} |
-| BC-{YYYY}-{NNN}/AC-02 | {status} | {test / command / CI check} |
 
 ## Bug Reproduction
 

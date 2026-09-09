@@ -32,12 +32,14 @@ application
 domain
 
 adapter/out
-    ↑
+    ↓
 application/port
 
 config/bootstrap
     → 负责装配
 ```
+
+箭头表示源代码依赖：出站 Adapter 实现 Application Port，依赖方向指向 Port；不表示运行时调用顺序。
 
 ## 最小规则集
 

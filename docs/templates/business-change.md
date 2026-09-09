@@ -31,7 +31,9 @@ businessRules:
 
 ## Acceptance Criteria
 
-Acceptance Criteria 是本次 BC 的局部稳定编号。引用时推荐写成 `BC-{YYYY}-{NNN}/AC-01`，避免不同 BC 的 `AC-01` 混淆。
+若 AC 已在关联 Issue 中定义，此处引用 `{Issue 完整 URL} / AC-01` 等标识，不重复填写下表；仅在本 BC 是 AC 权威来源时使用下表及 BC 局部编号。后续测试映射沿用同一来源的完整引用。
+
+在本 BC 定义的 Acceptance Criteria 使用局部稳定编号。引用时推荐写成 `BC-{YYYY}-{NNN}/AC-01`，避免不同 BC 的 `AC-01` 混淆。
 
 | ID | Scenario / Given | When | Expected |
 |---|---|---|---|

@@ -24,8 +24,7 @@
 
 ## Acceptance Criteria
 
-- `BC-{YYYY}-{NNN}/AC-01`
-- `BC-{YYYY}-{NNN}/AC-02`
+引用选定的 AC 权威来源：`{Issue 完整 URL} / AC-01` 或 `BC-{YYYY}-{NNN}/AC-01`。不将 Issue 中的 AC 复制到 BC；适用性遵循[需求到 Issue 流程](../workflow/requirement-to-issue.md#上下文与权威来源)。
 
 ## Behavior Before
 

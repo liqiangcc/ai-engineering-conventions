@@ -25,13 +25,13 @@
 Controller / Consumer / Tool
             ↓
           Use Case       ← 控制
-            ↓
-     Domain Rule/Policy  ← 逻辑
-            ↓
-           Port
-            ↑
-          Adapter        ← 副作用实现
+            ├──→ Domain Rule/Policy  ← 逻辑
+            └──→ Application Port
+                          ↑
+                     Adapter        ← 副作用实现
 ```
+
+箭头表示源代码依赖，不表示执行顺序。Use Case 分别依赖领域规则与外部能力契约，Adapter 实现 Port；Domain 不依赖 Application Port。执行时由 Use Case 获取事实、调用规则，再按决策组织副作用，避免把基础设施访问混入业务判断。
 
 ## 逻辑的要求
 
