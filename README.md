@@ -79,12 +79,14 @@ Git History / Incident Review
 
 ### 工作流
 
+- [从需求输入到研发 Issue](docs/workflow/requirement-to-issue.md)
 - [AI 开发流程](docs/workflow/ai-development.md)
 - [Code Review 流程](docs/workflow/code-review.md)
 - [Incident / Bug 复盘流程](docs/workflow/incident-review.md)
 
 ### 模板
 
+- [研发 Issue](docs/templates/development-issue.md)
 - [Business Rule](docs/templates/business-rule.md)
 - [Business Change / Acceptance Criteria](docs/templates/business-change.md)
 - [Verification Report](docs/templates/verification-report.md)

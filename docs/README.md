@@ -52,6 +52,7 @@ generated-navigation.md
 回答“开发、Review、复盘怎么执行”：
 
 ```text
+requirement-to-issue.md
 ai-development.md
 code-review.md
 incident-review.md
@@ -62,6 +63,7 @@ incident-review.md
 项目记录模板：
 
 ```text
+development-issue.md
 business-rule.md
 business-change.md
 verification-report.md
@@ -126,7 +128,7 @@ Java 怎么组织          → java
 ```text
 当前工程原则         → principles / java
 当前业务规则         → 项目自己的 BR 文档 + 代码
-本次验收预期         → BC / Acceptance Criteria
+本次验收预期         → Issue 或 BC 中的 Acceptance Criteria（选定一个权威位置）
 可执行正确性证据     → Tests / Verification Report / CI
 自动执行方式         → 项目稳定命令 + CI
 一次业务变化原因     → BC / PR / Git
