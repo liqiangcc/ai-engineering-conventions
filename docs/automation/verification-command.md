@@ -40,12 +40,19 @@ all
 
 ## Exit Code
 
-```text
-0  requested required targets 通过
-1  至少一个 requested target 失败
-2  工具/环境错误
-3  target 不支持或参数错误
-```
+| Exit | 含义 |
+|---|---|
+| 0 | 已声明的必需范围满足（VERIFIED） |
+| 1 | 必需项存在 FAIL 或 PRE_EXISTING_FAILURE |
+| 2 | 必需项发生工具/环境错误，或入口工具本身故障 |
+| 3 | 参数错误或请求的 target 不支持 |
+| 4 | 必需验证不完整，包括 NOT_RUN / NOT_VERIFIED、空结果或没有必需项 |
+
+先校验全部参数和 target，错误返回 3，不开始部分执行。参数有效时，组合执行按必需失败（1）→ 必需工具/环境错误（2）→ 不完整（4）→ 满足（0）的优先级返回；报告保留全部原因。入口工具自身故障导致无法可靠汇总时返回 2，不伪造结果。
+
+非必需检查不影响门禁和退出码，但其失败、环境错误及未执行项必须披露。显式请求的 target 默认作为必需项；组合 target 的必需集合在执行前按项目门禁确定，不能事后删掉失败项。
+
+汇总结论遵守[Verification Result](../schemas/verification-result.md#conclusion)。`all` 的项目覆盖范围必须公开；未包含 HTTP/部署验证时必须明确说明，不能从名称推断全部环境已验证。
 
 ## Java 映射
 

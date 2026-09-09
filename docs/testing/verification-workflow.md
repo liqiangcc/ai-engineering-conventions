@@ -6,6 +6,8 @@ AI 完成代码修改后，必须用可重复证据回答：
 
 > 这次修改为什么可以认为是正确的？还有什么没有被验证？部署出去的真实实例是否也已经验证？
 
+状态、必需集合和汇总结论遵守[Verification Result](../schemas/verification-result.md)。非必需问题仍须披露，已有失败不自动豁免门禁。
+
 Verification 不是一句“tests passed”，而是一条从业务依据到运行实例的证据链。
 
 ## 验证输入
@@ -333,4 +335,4 @@ AI 只有在以下条件成立时才能对相应阶段说“已验证”：
 
 如果只完成代码静态检查，应使用“实现完成，尚未完成运行验证”等准确表述。
 
-如果 Pre-Deployment 全部通过但尚未部署，应使用“Pre-Deployment VERIFIED；Post-Deployment NOT RUN”。
+如果任务包含部署但尚未部署，Post-Deployment 必需检查记录 NOT_RUN，阶段结论为 NOT_VERIFIED；Overall 根据任务范围内的原始结果汇总。任务不包含部署时，该阶段记为 NOT_REQUIRED。

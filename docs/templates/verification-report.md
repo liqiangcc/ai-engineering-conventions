@@ -1,5 +1,7 @@
 # Verification Report
 
+结果填写遵守[统一验证状态与汇总语义](../schemas/verification-result.md)。每层 Result 可使用完整状态集合；N/A 仅表示经分析不适用，不能表示未运行。Required 在执行前确定，未出结果的必需项也必须保留。
+
 ## Scope
 
 ```yaml
@@ -40,15 +42,15 @@ Evidence:
 
 ## Pre-Deployment Verification
 
-| Layer | Result | Evidence |
-|---|---|---|
-| Business Rule Tests | PASS / FAIL / N/A | {tests} |
-| Use Case Tests | PASS / FAIL / N/A | {tests} |
-| Contract / Adapter Tests | PASS / FAIL / N/A / NOT VERIFIED | {tests} |
-| Architecture Tests | PASS / FAIL / N/A | {tests} |
-| HTTP API Tests | PASS / FAIL / N/A / NOT VERIFIED | {http case / environment} |
-| Module Regression | PASS / FAIL / NOT RUN | {command / CI} |
-| Repository Regression | PASS / FAIL / NOT RUN | {command / CI} |
+| Layer | Required | Result | Evidence / Reason |
+|---|---|---|---|
+| Business Rule Tests | {true/false} | {status} | {tests / reason} |
+| Use Case Tests | {true/false} | {status} | {tests / reason} |
+| Contract / Adapter Tests | {true/false} | {status} | {tests / reason} |
+| Architecture Tests | {true/false} | {status} | {tests / reason} |
+| HTTP API Tests | {true/false} | {status} | {http case / environment / reason} |
+| Module Regression | {true/false} | {status} | {command / CI / reason} |
+| Repository Regression | {true/false} | {status} | {command / CI / reason} |
 
 ## Post-Deployment Verification
 
@@ -62,14 +64,14 @@ runningVersion: {observed version}
 verificationTime: {timestamp}
 ```
 
-| Check | Result | Evidence |
-|---|---|---|
-| Deployment Identity | PASS / FAIL / NOT VERIFIED | {version endpoint / deploy platform} |
-| Health / Readiness | PASS / FAIL / NOT RUN | {check} |
-| Targeted Change Case | PASS / FAIL / NOT VERIFIED | {HTTP / regression case} |
-| Deployment Smoke | PASS / FAIL / NOT RUN | {suite / cases} |
-| Production-safe Smoke | PASS / FAIL / NOT RUN / N/A | {cases} |
-| Production Bug Case | PASS / FAIL / NOT VERIFIED / N/A | {case / reason} |
+| Check | Required | Result | Evidence / Reason |
+|---|---|---|---|
+| Deployment Identity | {true/false} | {status} | {version endpoint / deploy platform} |
+| Health / Readiness | {true/false} | {status} | {check} |
+| Targeted Change Case | {true/false} | {status} | {HTTP / regression case} |
+| Deployment Smoke | {true/false} | {status} | {suite / cases} |
+| Production-safe Smoke | {true/false} | {status} | {cases / reason} |
+| Production Bug Case | {true/false} | {status} | {case / reason} |
 
 对于非 `production-safe` 的写操作，允许生产 Bug Case 为 `NOT VERIFIED`，但必须说明为什么不能安全执行以及已完成的 staging 证据。
 
@@ -95,6 +97,12 @@ PRE_EXISTING_FAILURE
 
 - {failure}: {classification} — {evidence / analysis}
 
+## Non-required Issues
+
+- {非必需失败 / 环境错误 / 未执行项}: {status / evidence / reason}
+
+没有时填写 None。必需项全部通过也不能隐藏本节问题。
+
 ## Not Verified
 
 必须明确列出没有运行、无法运行或无法证明的内容。
@@ -119,13 +127,15 @@ None observed
 
 ## Conclusion
 
-只能根据真实执行证据下结论。
+依据[汇总决策表](../schemas/verification-result.md#conclusion)填写，不从是否 CI 全绿或当前实现推断。
 
 ```text
-Pre-Deployment: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED
-Post-Deployment: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED / NOT_RUN / NOT_REQUIRED
-Overall: VERIFIED / PARTIALLY_VERIFIED / NOT_VERIFIED / FAILED
+Pre-Deployment: {conclusion}
+Post-Deployment: {conclusion / NOT_REQUIRED when outside task scope}
+Overall: {conclusion over required task scope}
 ```
+
+VERIFIED 仅覆盖已声明的必需范围；全部必需项不适用时明确写“无适用的必需检查”。任务包含部署但尚未执行时，保留该阶段必需项为 NOT_RUN 并按表汇总。
 
 ### Reason
 
